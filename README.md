@@ -1,5 +1,5 @@
 # graph-cpp
-C++ implementation of graph-composition of vectors
+Granular media simulation with fracture using peridynamics
 
 # Installation
 
@@ -16,53 +16,16 @@ rm eigen-3.3.9.tar.gz
 python3 -m venv env
 source env/bin/activate
 pip3 install -r requirements.txt
+
+# generate the executable
+make 
 ```
 
-# Dependencies
-* (To be placed in `lib/`) [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) and specify the version number in `makefile`
-* Python `matplotlib`, `numpy`, ~~`pandas`, (`tables` to read `hdf5` files with `panda`),~~ `h5py` to read those files _without_ `pandas`, which has limited reading ability
-* `gmsh`:
-```
-sudo apt-get install gmsh
-```
-* To read `hdf5` files in linux using `h5dump`:
-```
-sudo apt-get install -y libhdf5-serial-dev
-```
-
-* All python packages
-```
-pip3 install numpy matplotlib h5py pygmsh gmsh meshio gekko pathos
-```
-* mesh related python dependencies (`pip3 install`): `pygmsh`, `gmsh`, `meshio`
-* optimization using `gekko`
-* parallel processing using `multiprocessing`, `pathos`
-
-**Note:** In `.geo` files, do **NOT** include points that are _not_ used in generating mesh. 
-Listing unused point `Point(p)` in the `.geo` file creates a `.msh` file that has `p` in it but `p` is not used as any element vertex. Therefore, `genmesh()` produces a node with _zero_ volume, that crashes the simulation by producing `-nan` values.
-
-We have two choices so far:
- - Add the unused point as mesh point using:
-```
-Point{p} in Volume {1};
-```
-for 3D (`Sphere(1)` is a `Volume`), or 
-```
-Point{p} in Surface {1};
-```
-for 2D.
- - Do not include the point in the `.geo` file.
-
-**Note:** Over-damping, i.e. `damping_ratio > 1` introduces extra oscillation. So, avoid it.
-
-# Run
-
-* Specify the location of the `Eigen` library path in `makefile`
-
-* Setup the experiment in `gen_setup.py`. This uses dictionaries:
+# Experiment setup and running
+* Specify the experiment in `gen_setup.py`. This uses dictionaries:
+  * `exp_dict.py`
   - `shape_dict.py`
   - `material_dict.py`
-  * `exp_dict.py`
 
 * Generate the setup: 
 ```
@@ -75,25 +38,31 @@ This creates `setup.png` and `meshdata/all.h5` containing _all_ the information 
 make getfresh_py
 ```
 
-* Specify the timesteps and simulation parameters in `run/readfiles.cpp`. Compile and execute:
+* Specify the timesteps and simulation parameters in `config/main.conf`. Execute the compiled binary:
 ```
-make
-make ex
+make ex2
 ```
-which run broadly
-```
-g++ test/simulate2d.cpp -o bin/readf
-bin/readf
-```
+(`ex3` for 3D)
 
 * Generate plots from the data produced in `output/hdf5/` using
 ```
-python3 hdf_plot_cl.py
+python3 plot_current.py <initial_index> <final_index>
 ```
 or
 ```
 make genplot
 ```
+
+# Dependencies
+* [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) (Specify the location of the `Eigen` library path in `makefile` if using other versions)
+* `gmsh` to generate mesh:
+* To read `hdf5` files in linux using `h5dump`:
+* Python packages
+    * `matplotlib`, `numpy` as usual
+    * mesh related python dependencies (`pip3 install`): `pygmsh`, `gmsh`, `meshio`
+    * optimization using `gekko`
+    * parallel processing using `multiprocessing`, `pathos`
+
 
 # Code concept
 
@@ -131,12 +100,31 @@ The more the coefficient of friction, the larger the oscillation
 
 | breakable 	| movable 	| stoppable |
 |:--------:	|:-------:	|:---------:|
-| bonds break	|timestep updates| feels contact forces
+| bonds break	|timestep updates| feels contact forces |
 
 * `movable=0` implies `breakable=0`
 * `stoppable=0` implies `breakable=0`
 * peridynamic force in not computed when `movable=0` or `stoppable=0`
 * If you want the particle to move only via external force, set `0,1,0`
+
+# Notes regarding mesh generated via `.geo` files
+**Note:** In `.geo` files, do **NOT** include points that are _not_ used in generating mesh. 
+Listing unused point `Point(p)` in the `.geo` file creates a `.msh` file that has `p` in it but `p` is not used as any element vertex. Therefore, `genmesh()` produces a node with _zero_ volume, that crashes the simulation by producing `-nan` values.
+
+We have two choices so far:
+ - Add the unused point as mesh point using:
+```
+Point{p} in Volume {1};
+```
+for 3D (`Sphere(1)` is a `Volume`), or 
+```
+Point{p} in Surface {1};
+```
+for 2D.
+ - Do not include the point in the `.geo` file.
+
+**Note:** Over-damping, i.e. `damping_ratio > 1` introduces extra oscillation. So, avoid it.
+
 
 # Todo
 - [ ] Save connectivity data for resuming
@@ -146,16 +134,16 @@ The more the coefficient of friction, the larger the oscillation
 * [ ] [Better to edit (a copy of) timeloop.cpp] How to simulate: particle first settles, then things are dropped on them
 	- an override of total particles!
 * [ ] To get a convex curve like the others test on `2d_bulk_small`
-	[?] Equal grain size (maybe the disparity in cnot computation for scaled grains is causing extra/less force)
-	[x] [didn't make any difference] Bigger grain size
-	[x] [didn't make any difference] Allow other values of friction (and damping)?
-	[ ] Compute the wall reaction force from the particles
-		[ ] From the distance from the wall
-		[ ] From averaged contact like Kawamoto
-	[?] Allow the right wall to move to maintain a constant pressure (Kawamoto)
-	[ ] Does rearrangement of grains really produce a dip in the force?
-	[ ] Compute ratio of sigma_1 and sigma_3 vs the difference 
-	[x] [Important. Seen evidence where increasing scaling without increasing delta leads to excessive jump upon impact.] While scaling particles, if delta remains constant, the neighbors need to be recomputed. On the other hands, if the neighbors are kept the same, delta needs to be modified and hence cnot and snot changes too.
+	- [?] Equal grain size (maybe the disparity in cnot computation for scaled grains is causing extra/less force)
+	- [x] [didn't make any difference] Bigger grain size
+	- [x] [didn't make any difference] Allow other values of friction (and damping)?
+	- [ ] Compute the wall reaction force from the particles
+	   - [ ] From the distance from the wall
+	   - [ ] From averaged contact like Kawamoto
+	- [?] Allow the right wall to move to maintain a constant pressure (Kawamoto)
+	- [ ] Does rearrangement of grains really produce a dip in the force?
+	- [ ] Compute ratio of sigma_1 and sigma_3 vs the difference 
+	- [x] [Important. Seen evidence where increasing scaling without increasing delta leads to excessive jump upon impact.] While scaling particles, if delta remains constant, the neighbors need to be recomputed. On the other hands, if the neighbors are kept the same, delta needs to be modified and hence cnot and snot changes too.
 
 * [ ] Export total runtime to file
 * [ ] Create a plot class with `append` to plot more files and `superimpose` to plot within the same picture
@@ -287,8 +275,6 @@ We would like apply vector operators on the elements of the graph-like datatype.
 # Updating the neighborhood array:
 
 * As bonds break, elements are to be removed from the neighborhood array. With datatype `vector`, it can be done dynamically using `NbdArr.erase()`
-
-
 
 # Points to remember
 * Make sure the NbdArr loaded in C++ contains serials that start from 1, so we need to subtract 1 to make it compatible 
