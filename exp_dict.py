@@ -2443,7 +2443,7 @@ def coffee_diffmesh():
     # delta = 10e-3
     delta = 8e-3
     meshsize = delta/5
-    contact_radius = delta/3
+    contact_radius = delta/4
 
     # blade_l = 5e-3
     # blade_s = 0.5e-3
@@ -2452,7 +2452,7 @@ def coffee_diffmesh():
 
     # particle toughness
     Gnot_scale = 0.7
-    rho_scale = 0.5
+    rho_scale = 0.6
 
     # at least this much space to leave between particles. Will get halved while selecting max radius
     min_particle_spacing = contact_radius*1.001
@@ -2532,8 +2532,8 @@ def coffee_diffmesh():
     blade.stoppable = 0
 
     # 1000 RPM (pretty high for burr coffee grinder) = 1000 * 2 * pi / 60 (rad/s) ~ 104 rad/s
-    v_val = 1000
-    # v_val = 500
+    # v_val = 1000
+    v_val = 600
 
     perp = np.array([[0, -1], [1, 0]])
 

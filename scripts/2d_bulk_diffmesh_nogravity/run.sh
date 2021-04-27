@@ -5,7 +5,7 @@ logfile=$path/output.log
 #gmsh meshdata/3d/3d_sphere_small.geo -3
 
 stds=(
-0
+#0
 0.2
 #0.4
 #0.6
@@ -58,6 +58,22 @@ function run {
 	# edit timesteps
 	#echo "timesteps = ${timesteps[i]}" >> config/main.conf
 
+	# enable fracture of not
+	if [ "$1" = "frac" ]
+	then
+	    echo 'Enable fracture and self_contact.'
+
+	    echo "enable_fracture = 1" >> config/main.conf
+	    echo "self_contact = 1" >> config/main.conf
+	else
+	    echo 'Disable fracture and self_contact.'
+
+	    echo "enable_fracture = 0" >> config/main.conf
+	    echo "self_contact = 0" >> config/main.conf
+	fi
+
+
+
 	# run code
 	echo 'running'
 	make ex2 >> $logfile
@@ -93,9 +109,6 @@ function run {
 
 	# generate wall reaction
 	python3 gen_wall_reaction.py
-
-	## collect data
-
 	# copy npy files
 	cp {output,$dir}/V.npy
 
@@ -120,7 +133,8 @@ function run {
 }
 
 # call function
-run ''
+#run ''
+run 'frac'
 
 # generate experiment setup
 #python3 $path/setup.py 0.2
@@ -129,16 +143,51 @@ run ''
 #make getfresh_py
 
 #######################################################################
- #generate argument list of files with csv filenames
-args=''
-for std in "${stds[@]}"
-do 
-    args="$args ${std}"
-    #args="$args ${shape}$1"
-done
-echo "All input strings: $args"
-python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
 
-sxiv $str_pref"force_plot.png" &
+function walldata {
+
+
+     #generate argument list of files with csv filenames
+    args=''
+    for std in "${stds[@]}"
+    do 
+
+	# subdirectory name
+	dir=${str_pref}$std$1
+	data_loc="$dir/h5/"
+
+	## get the last index
+	last=$(ls $dir/h5/tc_*.h5 | tail -1) # Get the largest indices
+	last=${last##*/} # strip the path
+	last="${last%.*}" # strip the extension
+	last=$(echo $last | awk -F '_' '{ print $2 }')
+
+	echo "last index = $last"
+	echo "input data location = $data_loc"
+
+	echo "Running: python3 $path/genwallreaction.py 1 $last $data_loc"
+	python3 $path/genwallreaction.py 1 $last $data_loc
+    done
+}
+
+#walldata ''
+walldata 'frac'
+
+
+function wallplot {
+     #generate argument list of files with csv filenames
+    args=''
+    for std in "${stds[@]}"
+    do 
+	#args="$args ${std}"
+	args="$args ${shape}$1"
+    done
+    echo "All input strings: $args"
+    python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
+}
+
+wallplot ''
+wallplot 'frac'
+#sxiv $str_pref"force_plot.png" &
 
 

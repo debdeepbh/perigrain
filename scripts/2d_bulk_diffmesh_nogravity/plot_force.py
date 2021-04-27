@@ -25,7 +25,7 @@ for i in range(t_i):
     shape = argv[i+1]
     print('shape', shape)
     # dir=${str_pref}$std$1
-    d.append(np.load(str_pref+shape+'/V.npy', allow_pickle=True))
+    d.append(np.load(str_pref+shape+'/h5/V.npy', allow_pickle=True))
     # print('loading'+str_pref+shape+'.npy')
     labels.append(shape)
 
@@ -60,6 +60,9 @@ for i in range(t_i):
 
     # top wall force 
     plt.plot([ np.abs(v.wall_reaction[2,1]) for v in d[i]],  label = r'$\sigma=$ '+labels[i])
+    
+    # volume fraction vs top wall force
+    # plt.plot(phi, [ np.abs(v.wall_reaction[2,1]) for v in d[i]],  label = r'$\sigma=$ '+labels[i])
 
     # total force in time
     # plt.plot([ (np.abs(v.wall_reaction[3,1]) +
