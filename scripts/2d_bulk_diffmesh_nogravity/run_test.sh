@@ -5,14 +5,11 @@ logfile=$path/output.log
 #gmsh meshdata/3d/3d_sphere_small.geo -3
 
 stds=(
-#0
+0
 0.2
 #0.4
 #0.6
 )
-
-#resume='no'
-resume='yes'
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -32,7 +29,7 @@ str_pref="$path/data/"
 mkdir $str_pref
 
 #clear logfile
-echo '' > $logfile
+#echo '' > $logfile
 
 function run {
     for i in "${!stds[@]}"
@@ -50,18 +47,10 @@ function run {
 	dir=${str_pref}$std$1
 	mkdir -p $dir
 
-
-	# enable fracture of not
-	if [ "$resume" = "no" ]
-	then
-	    # generate experiment setup
-	    python3 $path/setup.py $std >> $logfile
-	    # copy the data
-	    make getfresh_py >> $logfile
-	else
-	    cp $dir/h5/all.h5 data/hdf5/
-	fi
-
+	# generate experiment setup
+	python3 $path/setup.py $std >> $logfile
+	# copy the data
+	make getfresh_py >> $logfile
 	# copy base conf
 	#cp $path/base$1.conf config/main.conf
 	cp $path/base.conf config/main.conf
@@ -84,20 +73,6 @@ function run {
 	fi
 
 
-	if [ "$resume" = "yes" ]
-	then
-	    ## get the last index
-	    last=$(ls $dir/h5/tc_*.h5 | tail -1) # Get the largest indices
-	    last=${last##*/} # strip the path
-	    last="${last%.*}" # strip the extension
-	    last=$(echo $last | awk -F '_' '{ print $2 }')
-
-	    cp $dir/h5/tc_$last.h5 output/hdf5/
-	    cp $dir/h5/wall_$last.h5 output/hdf5/
-	    echo "do_resume = 1" >> config/main.conf
-	    echo "resume_ind = $last" >> config/main.conf
-	    echo "wall_resume = 1" >> config/main.conf
-	fi
 
 	# run code
 	echo 'running'
@@ -159,7 +134,7 @@ function run {
 
 # call function
 #run ''
-run 'frac'
+#run 'frac'
 
 # generate experiment setup
 #python3 $path/setup.py 0.2
@@ -196,7 +171,7 @@ function walldata {
 }
 
 #walldata ''
-walldata 'frac'
+#walldata 'frac'
 
 
 function wallplot {
@@ -208,7 +183,7 @@ function wallplot {
 	#args="$args ${shape}$1"
     done
     echo "All input strings: $args"
-    python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
+    python3 $path/plot_force_test.py $args $str_pref $str_pref"force_plot.png"
 }
 
 #wallplot ''
