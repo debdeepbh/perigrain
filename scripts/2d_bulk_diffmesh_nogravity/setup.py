@@ -28,8 +28,13 @@ min_particle_spacing = contact_radius*1.001
 # wall_top    = 10e-3
 # wall_bottom = 0e-3
 
-wall_left   = -25e-3
-wall_right  = 25e-3
+# wall_left   = -25e-3
+# wall_right  = 25e-3
+# wall_top    = 50e-3
+# wall_bottom = -50e-3
+
+wall_left   = -10e-3
+wall_right  = 10e-3
 wall_top    = 50e-3
 wall_bottom = -50e-3
 
@@ -48,6 +53,10 @@ P = np.array([
 # particle generation spacing
 P_meshsize = 3.5e-3
 msh = get_incenter_mesh_loc(P, P_meshsize, modify_nodal_circles= True, gen_bdry = False )
+
+# trim minimum radius
+msh.trim(min_rad = 0.7e-3 + min_particle_spacing/2)
+
 # reduce radius to avoid contact
 msh.incircle_rad -= min_particle_spacing/2
 msh.info()

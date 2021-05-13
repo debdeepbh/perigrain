@@ -11,8 +11,8 @@ stds=(
 #0.6
 )
 
-#resume='no'
-resume='yes'
+resume="no"
+#resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -158,8 +158,8 @@ function run {
 }
 
 # call function
-#run ''
-run 'frac'
+run ''
+#run 'frac'
 
 # generate experiment setup
 #python3 $path/setup.py 0.2
@@ -170,13 +170,10 @@ run 'frac'
 #######################################################################
 
 function walldata {
-
-
      #generate argument list of files with csv filenames
     args=''
     for std in "${stds[@]}"
     do 
-
 	# subdirectory name
 	dir=${str_pref}$std$1
 	data_loc="$dir/h5/"
@@ -195,8 +192,15 @@ function walldata {
     done
 }
 
-#walldata ''
-walldata 'frac'
+## To produce plots with and without fracture, turn of `run` and `run frac`
+#stds=(
+#0
+#0.2
+##0.2frac
+#)
+
+walldata ''
+#walldata 'frac'
 
 
 function wallplot {
@@ -211,8 +215,8 @@ function wallplot {
     python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
 }
 
-#wallplot ''
-wallplot 'frac'
+wallplot ''
+#wallplot 'frac'
 #sxiv $str_pref"force_plot.png" &
 
 
