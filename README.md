@@ -9,6 +9,7 @@ sudo apt-get install -y libhdf5-serial-dev gmsh
 
 # eigen library
 wget -c https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.tar.gz 
+mkdir lib
 tar -xvf eigen-3.3.9.tar.gz -C lib/
 rm eigen-3.3.9.tar.gz
 
