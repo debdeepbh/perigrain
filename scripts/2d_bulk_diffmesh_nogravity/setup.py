@@ -16,7 +16,7 @@ Each particle mesh is generated using scaling factor, hence the neighborhood and
 """
 
 delta = 1e-3
-meshsize = 1e-3/6
+meshsize = 1e-3/5
 contact_radius = delta/4;
 
 # at least this much space to leave between particles. Will get halved while selecting max radius
@@ -60,7 +60,7 @@ P_meshsize = 3.5e-3
 msh = get_incenter_mesh_loc(P, P_meshsize, modify_nodal_circles= True, gen_bdry = False )
 
 # trim minimum radius
-msh.trim(min_rad = 0.7e-3 + min_particle_spacing/2)
+#msh.trim(min_rad = 0.7e-3 + min_particle_spacing/2)
 
 # reduce radius to avoid contact
 msh.incircle_rad -= min_particle_spacing/2
