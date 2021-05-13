@@ -19,6 +19,29 @@ using namespace std::chrono;
 #include <ctime>
 #include <time.h>
 
+// Convert NbdArr to connectivity
+vector<Matrix<unsigned, 1, 2>> NbdArr2conn(vector<vector<unsigned>> NbdArr)
+{
+    vector<Matrix<unsigned, 1, 2>> Conn;
+
+    //// get total number of bonds to allocate memory in advance
+    //unsigned nbonds  = 0;
+    //for (unsigned i = 0; i < NbdArr.size(); i++) {
+	//nbonds += NbdArr[i].size();
+    //}
+    //Conn.resize(nbonds);
+
+    for (unsigned i = 0; i < NbdArr.size(); i++) {
+	for (unsigned j = 0; j < NbdArr[i].size(); j++) {
+	    Matrix<unsigned, 1, 2> v = {i, NbdArr[i][j]};
+
+	    //// append
+	    Conn.push_back(v);
+	}
+    }
+    return Conn;
+};
+
 template <unsigned dim> auto mean(vector<Matrix<double, 1, dim>> v) {
   auto nnodes = v.size();
   Matrix<double, 1, dim> mean;
@@ -456,6 +479,14 @@ void run_timeloop(vector<ParticleN<dim>> &PArr, Timeloop TL, Contact CN,
           PArr[i].pos;
       PArr[i].vel = load_rowvecs<double, dim>(filename, particlenum + "/vel");
       PArr[i].acc = load_rowvecs<double, dim>(filename, particlenum + "/acc");
+
+      if (TL.enable_fracture) {
+        // load connectivity
+        auto Conn =
+            load_rowvecs<unsigned, 2>(filename, particlenum + "/Connectivity");
+        PArr[i].NbdArr = conn2NArr(Conn, PArr[i].nnodes);
+        PArr[i].gen_xi();
+      }
     }
 
     if (TL.wall_resume) {
@@ -751,6 +782,9 @@ contact force computation
           // (Newton/vol)
           // store_rowvec<double, dim>(fp, particlenum + "/force",
           // PArr[i].force*PArr[i].vol);
+
+	  // save connectivity, converting NbdArr
+          store_rowvec<unsigned, 2>(fp, particlenum + "/Connectivity", NbdArr2conn(PArr[i].NbdArr));
 
           // debug, works
           // store_col<double>(fp, particlenum+"/vol", PArr[i].vol);

@@ -129,6 +129,12 @@ for 2D.
 
 # Todo
 - [ ] Save connectivity data for resuming
+	- [x] convert NbdArr to connectivity in C++
+	- [x] Save connectivity to file
+	- [x] Load connectivity on resume
+	- [x] [unnecessary] Add config option to load connectivity on resume (default: yes, if breaking enabled)
+	- [ ] Python loading connectivity from saved h5 files
+	- [ ] Test
 - [ ] Compression without gravity? (pre-computation of gravity takes too long)
 * [ ] Compute the total kinetic energy for plotting. Does fracture (without damping and friction) dissipate the kinetic energy?
 * [ ] [rewrite - speed boost attempt] For each particle `i` for each node `j` in particle-`i`, compute all forces on node `j` at once by looping over nodes of all particles, all walls and all self-contact nodes. This way, we can avoid going through the `ij` loops 3 times. Moreover, we can attempt to update the symmetric node as well. Is all this possible while using a parallelization?
@@ -519,3 +525,6 @@ Wall starting height for compression: x.xx = xxe-x
 |:----------|:----------|:-------------------|:-------|:-------------|:---------------|
 | 142       | 1490      |     80000          | 800    | 38128s ~10.5h|       x.xm     |
 | 142       | 1490      |     80000          | 400    | xxxxxs ~xx.xh|       x.xm     |
+
+1. 2d simulation: 2d_bulk_diffmesh_nogravity (meshsize  = 1/5)
+without fracture (without saving connectivity): 1800s

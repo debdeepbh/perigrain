@@ -158,8 +158,8 @@ function run {
 }
 
 # call function
-run ''
-#run 'frac'
+#run ''
+run 'frac'
 
 # generate experiment setup
 #python3 $path/setup.py 0.2
