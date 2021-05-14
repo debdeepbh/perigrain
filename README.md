@@ -133,8 +133,10 @@ for 2D.
 	- [x] Save connectivity to file
 	- [x] Load connectivity on resume
 	- [x] [unnecessary] Add config option to load connectivity on resume (default: yes, if breaking enabled)
-	- [ ] Python loading connectivity from saved h5 files
-	- [ ] Test
+	- [x] Python loading connectivity from saved h5 files
+	- [x] Plotting bonds
+	- [ ] Computing damage
+	- [x] Test
 - [ ] Compression without gravity? (pre-computation of gravity takes too long)
 * [ ] Compute the total kinetic energy for plotting. Does fracture (without damping and friction) dissipate the kinetic energy?
 * [ ] [rewrite - speed boost attempt] For each particle `i` for each node `j` in particle-`i`, compute all forces on node `j` at once by looping over nodes of all particles, all walls and all self-contact nodes. This way, we can avoid going through the `ij` loops 3 times. Moreover, we can attempt to update the symmetric node as well. Is all this possible while using a parallelization?

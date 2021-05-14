@@ -20,6 +20,7 @@ using namespace std::chrono;
 #include <time.h>
 
 // Convert NbdArr to connectivity
+// Error: counting all the bonds twice!
 vector<Matrix<unsigned, 1, 2>> NbdArr2conn(vector<vector<unsigned>> NbdArr)
 {
     vector<Matrix<unsigned, 1, 2>> Conn;

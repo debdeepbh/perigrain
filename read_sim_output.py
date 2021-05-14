@@ -7,6 +7,19 @@ import os.path
 
 from exp_dict import Wall, Wall3d
 
+def total_neighbors(conn, N):
+    """Compute the total number of neighbors from connectivity data
+    :conn: connectivity matrix, mx2, m=total intact bonds
+    :N: total number of nodes
+    :returns: TODO
+    """
+    deg = np.zeros(N)
+    for i in range(len(conn)):
+        deg[conn[i][0]] += 1
+        deg[conn[i][1]] += 1
+
+    return deg
+
 class PlotInfo(object):
     """reading plotinfo for simulation related info"""
     def __init__(self, fc, lc, dt, modulo, dim):
@@ -74,8 +87,9 @@ def read_run_time(run_time_file):
 
     return np.c_[t_ind, run_time]
 
-def populate_current(filename, exp_b, q = None, read_CurrPos=True, read_vel=False, read_acc=False, read_force=True):
+def populate_current(filename, exp_b, q = None, read_CurrPos=True, read_vel=False, read_acc=False, read_force=True, read_connectivity=False):
     """ Copies a main Experiment_breif setup class `exp_b` to a new Experiment_brief and then updates values from a given filename
+    : q: quantity to plot
     :returns: Experiment_brief, with copied setup data and updated motion info
     """
     # print(t, end = ' ', flush=True)
@@ -102,11 +116,26 @@ def populate_current(filename, exp_b, q = None, read_CurrPos=True, read_vel=Fals
                 t_exp_b.PArr[pid].acc    = np.array(f[name+'/acc'])
             if read_force:
                 P.force   = np.array(f[name+'/force'])
+            if read_connectivity:
+                P.connectivity   = np.array(f[name+'/Connectivity'])
 
 
             ## Quantity to plot: examples
             if (q == 'force_norm'):
                 P.q = np.sqrt(np.sum(np.square(P.force), axis=1))
+            if (q == 'damage'):
+                P_orig = exp_b.PArr[pid]
+                N = len(P_orig.pos)
+
+                orig_nbrs = total_neighbors(P_orig.connectivity, N)
+                now_nbrs = total_neighbors(P.connectivity, N)
+
+                # make sure not dividing by zero
+                P.q = now_nbrs / orig_nbrs
+                print(orig_nbrs)
+                print(now_nbrs)
+                print(P.q)
+                print('Done')
             elif (q == 'vel_norm'):
                 P.q = np.sqrt(np.sum(np.square(P.vel), axis=1)) 
             elif (q == 'vel_x_abs'):

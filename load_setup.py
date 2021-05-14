@@ -366,7 +366,7 @@ def read_setup(filename, matlab_data = False, print_output=True):
                         pos          = np.array(f[name+'/Pos']),
                         vol          = np.array(f[name+'/Vol']),
 
-                        connectivity = np.array(f[name+'/Connectivity'].astype(int)),
+                        connectivity = np.array(f[name+'/Connectivity']).astype(int),
                         nonlocal_bdry_nodes   = np.array(f[name+'/bdry_nodes']).astype(int),
                         # bdry_edges   = np.array(f[name+'/bdry_edges']),
 
