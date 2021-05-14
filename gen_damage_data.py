@@ -58,7 +58,12 @@ def compute_all(t):
     d_sum = np.zeros(len(PArr))
     for i in range(len(PArr)):
         # d_sum += np.sum(PArr[i].q, axis =0)
-        d_sum[i] = np.sum(PArr[i].q, axis =0)
+
+        ## total damage of the particle
+        # d_sum[i] = np.sum(PArr[i].q, axis =0)
+
+        ## mean damage of the particle
+        d_sum[i] = np.mean(PArr[i].q, axis =0)
 
     # print(d_sum)
     return d_sum
@@ -81,15 +86,40 @@ print('Time taken: ', time.time() - start)
     # plt.savefig('stem'+str(i)+'.png')
     # plt.close()
 
+#######################################################################
+# damage of all particles
+
 plt.matshow(V)
 plt.xlabel('particle')
-plt.ylabel('time')
+plt.ylabel('timestep')
 plt.colorbar()
+plt.clim(0, 1)
 # plt.show()
-
 plt.savefig('output/img/damage_mat.png')
 plt.close()
 
+#######################################################################
+# mean damage of the bulk
+bulk_d = [np.mean(d) for d in V]
+plt.plot(bulk_d)
+plt.savefig('output/img/bulk_damage.png')
+plt.close()
 
+#######################################################################
+# damage distribution at the end
+bins = 10
+plt.hist(V[-1], bins=bins)
+plt.savefig('output/img/end_damage_hist.png')
+plt.close()
 
+#######################################################################
+# damage distribution at different time points
+for i in range(len(V)):
+    plt.hist(V[i], bins=bins)
+    plt.xlim([0,1])
+    plt.ylim([0,len(V[0])])
+    plt.savefig('output/img/damage_hist_'+('%05d' % i)+'.png')
+    plt.close()
 
+#######################################################################
+# initial particle size and damage

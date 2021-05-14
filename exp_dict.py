@@ -2442,7 +2442,7 @@ def coffee_diffmesh():
     # delta = 1e-3
     # delta = 10e-3
     delta = 8e-3
-    meshsize = delta/6
+    meshsize = delta/5
     contact_radius = delta/4
 
     # blade_l = 5e-3
@@ -2496,7 +2496,7 @@ def coffee_diffmesh():
         P_meshsize = 35e-3 # cm order
         msh = get_incenter_mesh_loc(P, P_meshsize, modify_nodal_circles= True, gen_bdry = False )
 
-        msh.trim(min_rad = 7e-3 + min_particle_spacing/2)
+        msh.trim(min_rad = 6e-3 + min_particle_spacing/2)
 
         # reduce radius to avoid contact
         msh.incircle_rad -= min_particle_spacing/2
