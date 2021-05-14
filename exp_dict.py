@@ -2452,7 +2452,9 @@ def coffee_diffmesh():
 
     # particle toughness
     Gnot_scale = 0.7
-    rho_scale = 0.6
+    # rho_scale = 0.6
+    # attempt to modify further
+    rho_scale = 0.7
 
     # at least this much space to leave between particles. Will get halved while selecting max radius
     min_particle_spacing = contact_radius*1.001
