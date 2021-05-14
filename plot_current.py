@@ -13,8 +13,12 @@ from sys import argv
 import load_setup
 from read_sim_output import read_plotinfo, read_run_time, populate_current, read_wallinfo
 
-run_parallel = 0
-# run_parallel = 1
+# run_parallel = 0
+run_parallel = 1
+
+# quantity to plot in color
+# q_col = 'force_norm'
+q_col = 'damage'
 
 ## # load the main experiment setup data
 exp_b = load_setup.read_setup('data/hdf5/all.h5')
@@ -65,7 +69,7 @@ def write_img(t):
 
     h5_filename = loc+tc_ind+".h5";
     # t_exp_b = populate_current(h5_filename, exp_b, q = 'force_norm')
-    t_exp_b = populate_current(h5_filename, exp_b, q = 'damage', read_CurrPos=True, read_vel=False, read_acc=False, read_force=True, read_connectivity=True)
+    t_exp_b = populate_current(h5_filename, exp_b, q = q_col, read_CurrPos=True, read_vel=False, read_acc=False, read_force=True, read_connectivity=True)
 
     
     # load wall info
@@ -94,6 +98,9 @@ def write_img(t):
 
     # colorlim = [0, 1e9]
     colorlim =None
+
+    if q_col == 'damage':
+        colorlim = [0, 1]
 
     t_exp_b.plot(by_CurrPos=True, plot_scatter = True, plot_delta = 0, plot_contact_rad = 0, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 0, edge_alpha = 0.2, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_linewidth=1, wall_alpha=wall_alpha, camera_angle = camera_angle, do_plot = False, do_save = 1, save_filename = out_png, dotsize = 5, plot_vol = False, linewidth = 0.5, limits = limits, remove_axes=False, grid =True, colorbar=True, colorlim=colorlim)
 

@@ -131,11 +131,13 @@ def populate_current(filename, exp_b, q = None, read_CurrPos=True, read_vel=Fals
                 now_nbrs = total_neighbors(P.connectivity, N)
 
                 # make sure not dividing by zero
-                P.q = now_nbrs / orig_nbrs
-                print(orig_nbrs)
-                print(now_nbrs)
-                print(P.q)
-                print('Done')
+                P.q = 1 - (now_nbrs / orig_nbrs)
+
+                # print(orig_nbrs)
+                # print(now_nbrs)
+                # print(P.q)
+                # print('max:', np.amax(P.q))
+                # print('Done')
             elif (q == 'vel_norm'):
                 P.q = np.sqrt(np.sum(np.square(P.vel), axis=1)) 
             elif (q == 'vel_x_abs'):

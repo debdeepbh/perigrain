@@ -20,7 +20,6 @@ using namespace std::chrono;
 #include <time.h>
 
 // Convert NbdArr to connectivity
-// Error: counting all the bonds twice!
 vector<Matrix<unsigned, 1, 2>> NbdArr2conn(vector<vector<unsigned>> NbdArr)
 {
     vector<Matrix<unsigned, 1, 2>> Conn;
@@ -34,10 +33,14 @@ vector<Matrix<unsigned, 1, 2>> NbdArr2conn(vector<vector<unsigned>> NbdArr)
 
     for (unsigned i = 0; i < NbdArr.size(); i++) {
 	for (unsigned j = 0; j < NbdArr[i].size(); j++) {
-	    Matrix<unsigned, 1, 2> v = {i, NbdArr[i][j]};
+	    auto q = NbdArr[i][j];
 
-	    //// append
-	    Conn.push_back(v);
+	    // To avoid counting all the bonds twice, we only allow sub-diagonal pairs, this essentially gets rid of the copy with reverse order
+	    if (i < q) {
+              Matrix<unsigned, 1, 2> v = {i, q};
+              //// append
+              Conn.push_back(v);
+            }
 	}
     }
     return Conn;
