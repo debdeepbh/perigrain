@@ -15,13 +15,13 @@ import load_setup
 # exp = exp_dict.wall_particle()
 # exp = exp_dict.particle_plank()
 # exp = exp_dict.collision()
-exp = exp_dict.collision_pacman()
+# exp = exp_dict.collision_pacman()
 # exp = exp_dict.crack_prenotch()
 # exp = exp_dict.fixed_prenotch()
 # exp = exp_dict.bulk_generated()
 # exp = exp_dict.bulk_generated_mixed()
 # exp = exp_dict.bulk_generated_diffmesh()
-# exp = exp_dict.coffee_diffmesh()
+exp = exp_dict.coffee_diffmesh()
 # exp = exp_dict.collision_3d()
 # exp = exp_dict.collision_3d_bad()
 # exp = exp_dict.bulk_generated_3d()
@@ -45,6 +45,6 @@ wall_color = ['cyan', 'red', 'yellow', 'blue', 'green', 'black']
 wall_alpha = 0.1
 
 ## # plot the setup data
-exp_b.plot(by_CurrPos=False, plot_scatter = True, plot_delta = 1, plot_contact_rad = 1, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 0, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_alpha=wall_alpha, do_plot = True, do_save = 0, save_filename = 'setup.png', dotsize = 10, linewidth = 0.3, remove_axes = False, grid = False)
+exp_b.plot(by_CurrPos=False, plot_scatter = True, plot_delta = 1, plot_contact_rad = 1, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 0, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_alpha=wall_alpha, do_plot = True, do_save = 1, save_filename = 'setup.png', dotsize = 10, linewidth = 0.3, remove_axes = False, grid = False, show_particle_index=True)
 
 

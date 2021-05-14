@@ -130,8 +130,15 @@ def populate_current(filename, exp_b, q = None, read_CurrPos=True, read_vel=Fals
                 orig_nbrs = total_neighbors(P_orig.connectivity, N)
                 now_nbrs = total_neighbors(P.connectivity, N)
 
-                # make sure not dividing by zero
-                P.q = 1 - (now_nbrs / orig_nbrs)
+
+                # make sure not dividing by zero: probably won't happen unless isolated notes are present 
+                P.q = (orig_nbrs - now_nbrs)/ orig_nbrs
+
+                # debug
+                # if pid==3:
+                    # print('now_nbrs=',now_nbrs)
+                    # print('orig_nbrs=',orig_nbrs)
+                    # print('P.q=',P.q)
 
                 # print(orig_nbrs)
                 # print(now_nbrs)

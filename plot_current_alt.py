@@ -6,15 +6,15 @@ import os.path
 
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 
 from sys import argv
 
 import load_setup
 from read_sim_output import read_plotinfo, read_run_time, populate_current, read_wallinfo
 
-# run_parallel = 0
-run_parallel = 1
+run_parallel = 0
+# run_parallel = 1
 
 ## quantity to plot in color
 # q_col = 'force_norm'
@@ -26,13 +26,6 @@ cmap_name = 'cividis'
 
 ## # load the main experiment setup data
 exp_b = load_setup.read_setup('data/hdf5/all.h5')
-
-# wall_color = 'red'
-wall_color = ['cyan', 'red', 'yellow', 'blue', 'green', 'black']
-wall_alpha = 0.5
-
-camera_angle = [0, 0]
-# camera_angle = [0, 90]
 
 plot_run_time = 0
 #######################################################################
@@ -58,13 +51,6 @@ if len(argv) == 3:
     print('argv1,2=', argv[1], argv[2])
     print('setting plti', plti.fc, 'to', plti.lc)
 
-# plt.show()
-# override
-# plti.fc = 30
-# plti.lc = 60
-
-# plti.print()
-
 def write_img(t):
     print(t, end = ' ', flush=True)
 
@@ -73,9 +59,8 @@ def write_img(t):
 
     h5_filename = loc+tc_ind+".h5";
     # t_exp_b = populate_current(h5_filename, exp_b, q = 'force_norm')
-    t_exp_b = populate_current(h5_filename, exp_b, q = q_col, read_CurrPos=True, read_vel=False, read_acc=False, read_force=True, read_connectivity=True)
+    t_exp_b = populate_current(h5_filename, exp_b, q = q_col, read_CurrPos=True, read_vel=False, read_acc=False, read_force=False, read_connectivity=True)
 
-    
     # load wall info
     wall_ind = ('wall_%05d' % t)
     wall_filename = loc+wall_ind+".h5"
@@ -91,41 +76,32 @@ def write_img(t):
         else:
             print('3D moving wall plotting is not implemented.')
         
+    PArr = t_exp_b.PArr
 
+    for i in range(len(PArr)):
+        P = PArr[i]
+        
+        if (i==3):
+            # print('i=',i, 'P.q=', P.q)
+            # plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], s = 5, c = np.array([P.q]), linewidth=0)
+            plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], s = 5, c = P.q, linewidth=0)
 
+        if (i==4):
+            # print('i=',i, 'P.q=', P.q)
+            # plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], s = 5, c = np.array([P.q]), linewidth=0)
+            plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], s = 5, c = 'blue', linewidth=0)
 
-    # limits = np.array([ [-6e-3, 6e-3], [-6e-3, 6e-3] ])
-    # limits = np.array([ [-11e-3, 11e-3], [-1e-3, 11e-3] ])
-    limits = None
-    # camera_angle = None
-    if (plti.lc - plti.fc):
-        camera_angle = [0, t/(plti.lc - plti.fc)*30]
-    else:
-        camera_angle = [0, 0]
+    
+    print('i=3', PArr[3].q)
+    print('i=4', PArr[4].q)
+             
 
-    # colorlim = [0, 1e9]
-    colorlim =None
-
-    if q_col == 'damage':
-        colorlim = [0, 1]
-
-    t_exp_b.plot(by_CurrPos=True, plot_scatter = True, plot_delta = 0, plot_contact_rad = 0, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 0, edge_alpha = 0.2, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_linewidth=1, wall_alpha=wall_alpha, camera_angle = camera_angle, do_plot = False, do_save = 1, save_filename = out_png, dotsize = 5, plot_vol = False, linewidth = 0.5, limits = limits, remove_axes=False, grid =True, colorbar=True, colorlim=colorlim, cmap_name=cmap_name)
-
-    # t_exp_b.plot(by_CurrPos=True, plot_scatter = True, plot_delta = 0, plot_contact_rad = 0, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 0, edge_alpha=0.2, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_alpha=wall_alpha, do_plot = False, do_save = 1, save_filename = out_png, dotsize = 10, linewidth = 1, remove_axes = True, grid = False)
-
-    # dotsize = 10
-    # # for P in enumerate(t_exp_b.PArr):
-    # for i in range(len(t_exp_b.PArr)):
-        # P = t_exp_b.PArr[i]
-        # q = np.sqrt(np.sum(np.square(P.force), axis=1)) #norm
-        # # q = np.sqrt(np.sum(np.square(vel), axis=1)) #norm
-        # # q = np.abs(vel[:,0]) #norm
-
-        # plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], c = q, s = dotsize, marker = '.', linewidth = 0, cmap='viridis')
-
-    # # saving plot
-    # matplotlib.pyplot.savefig(out_png, dpi=200, bbox_inches='tight')
-    # plt.close()
+    plt.colorbar()
+    plt.clim(0, 1)
+    plt.axis('scaled')
+    # plt.savefig('testimg_'+str(t)+'.png', bbox_inches='tight')
+    plt.show()
+    plt.close()
 
 start = time.time()
 
@@ -142,9 +118,5 @@ else:
     for i in range(plti.fc, plti.lc+1):
         write_img(i)
 
-# write_img(14)
-
 print('time taken ', time.time() - start)
-
-
 

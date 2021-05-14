@@ -128,15 +128,6 @@ for 2D.
 
 
 # Todo
-- [ ] Save connectivity data for resuming
-	- [x] convert NbdArr to connectivity in C++
-	- [x] Save connectivity to file
-	- [x] Load connectivity on resume
-	- [x] [unnecessary] Add config option to load connectivity on resume (default: yes, if breaking enabled)
-	- [x] Python loading connectivity from saved h5 files
-	- [x] Plotting bonds
-	- [ ] Computing damage
-	- [x] Test
 - [ ] Compression without gravity? (pre-computation of gravity takes too long)
 * [ ] Compute the total kinetic energy for plotting. Does fracture (without damping and friction) dissipate the kinetic energy?
 * [ ] [rewrite - speed boost attempt] For each particle `i` for each node `j` in particle-`i`, compute all forces on node `j` at once by looping over nodes of all particles, all walls and all self-contact nodes. This way, we can avoid going through the `ij` loops 3 times. Moreover, we can attempt to update the symmetric node as well. Is all this possible while using a parallelization?
@@ -182,6 +173,15 @@ It works under the following conditions:
   - [ ] How to change meshsize of particle arrangement mesh without editing the .geo file?
   - [ ] Optimization for nodal sphere radii
 
+- [x] Save connectivity data for resuming
+	- [x] convert NbdArr to connectivity in C++
+	- [x] Save connectivity to file
+	- [x] Load connectivity on resume
+	- [x] [unnecessary] Add config option to load connectivity on resume (default: yes, if breaking enabled)
+	- [x] Python loading connectivity from saved h5 files
+	- [x] Plotting bonds
+	- [x] Computing damage
+	- [x] Test
 * [?] [`2d_bar_pull`] Elastic bar
 	* Compute force on the boundary of the object, and divide by the number of nodes 
 	[x] force gradient

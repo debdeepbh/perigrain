@@ -87,7 +87,7 @@ class Experiment_brief(object):
 
 
 
-    def plot(self, by_CurrPos = False, plot_scatter = True, plot_delta = True, plot_contact_rad = True, plot_bonds = False, plot_bdry_nodes = False, plot_bdry_edges= True, edge_alpha = 0.2, plot_wall = True, wall_linewidth = 1, plot_wall_faces = False, wall_color = 'cyan', wall_alpha = 0.1, camera_angle = None, do_plot = True, do_save = True, save_filename = 'setup.png', dotsize = 10, plot_vol = False, linewidth = 0.3, limits = None, remove_axes=False, grid  = False, colorbar=True, colorlim=None):
+    def plot(self, by_CurrPos = False, plot_scatter = True, plot_delta = True, plot_contact_rad = True, plot_bonds = False, plot_bdry_nodes = False, plot_bdry_edges= True, edge_alpha = 0.2, plot_wall = True, wall_linewidth = 1, plot_wall_faces = False, wall_color = 'cyan', wall_alpha = 0.1, camera_angle = None, do_plot = True, do_save = True, save_filename = 'setup.png', dotsize = 10, plot_vol = False, linewidth = 0.3, limits = None, remove_axes=False, grid  = False, colorbar=True, colorlim=None, show_particle_index=False, cmap_name='viridis'):
         """TODO: Docstring for plot.
 
         :plot_delta: TODO
@@ -118,6 +118,9 @@ class Experiment_brief(object):
 
         # print('Plotting particle nodes: ')
         for i, P_b in enumerate(self.PArr):
+        # for i in range(len(self.PArr)):
+            # P_b = self.PArr[i]
+
             # Plot the mesh
             if by_CurrPos:
                 Pos = P_b.CurrPos
@@ -134,6 +137,7 @@ class Experiment_brief(object):
             else:
                 colors = P_b.q
 
+
             if plot_scatter:
 
                 if plot_vol:
@@ -143,17 +147,31 @@ class Experiment_brief(object):
                     d_sz = dotsize
 
                 if dim ==2:
-                    plt.scatter(Pos[:,0], Pos[:,1], c = colors, s = d_sz, marker = '.', linewidth = 0, cmap='viridis')
+                    # debug
+                    # if i==3:
+                        # # colors *= 0
+                        # # colors += 1
+                        # print('i==',i)
+                        # print('colors=', colors)
+
+                    # debug
+                    # if (i==3) or (i==4):
+                        # print('i==',i)
+                        # print('colors=', colors)
+                        # print('Pos=', Pos[:,0])
+
+                        plt.scatter(Pos[:,0], Pos[:,1], c=colors, s = d_sz, marker = '.', linewidth = 0, cmap=cmap_name)
+                        # plt.scatter(Pos[:,0], Pos[:,1], c = colors, s=5)
                 else:
-                    ax.scatter(Pos[:,0], Pos[:,1], Pos[:,2], c = colors, s = d_sz, marker = '.', linewidth = 0, cmap='viridis')
+                    ax.scatter(Pos[:,0], Pos[:,1], Pos[:,2], c = colors, s = d_sz, marker = '.', linewidth = 0, cmap=cmap_name)
 
             if plot_bdry_nodes:
                 bd = P_b.nonlocal_bdry_nodes
                 # time.sleep(5.5)
                 if dim==2:
-                    plt.scatter(Pos[bd,0], Pos[bd,1], s = dotsize*1.1, marker = '.', linewidth = 0, cmap='viridis')
+                    plt.scatter(Pos[bd,0], Pos[bd,1], s = dotsize*1.1, marker = '.', linewidth = 0, cmap=cmap_name)
                 else:
-                    ax.scatter(Pos[bd,0], Pos[bd,1], Pos[bd,2], s = dotsize*1.1, marker = '.', linewidth = 0, cmap='viridis')
+                    ax.scatter(Pos[bd,0], Pos[bd,1], Pos[bd,2], s = dotsize*1.1, marker = '.', linewidth = 0, cmap=cmap_name)
 
 
             if plot_bdry_edges:
@@ -190,6 +208,10 @@ class Experiment_brief(object):
                 else:
                     lc = Line3DCollection(ls, linewidths=linewidth, colors='b')
                     ax.add_collection(lc)
+
+            if show_particle_index:
+                # # text
+                plt.annotate(str(i), np.mean(Pos, axis = 0))
 
 
             # print(i, end = ' ', flush=True)
@@ -330,6 +352,7 @@ class Experiment_brief(object):
             else:
                 print('colorbar in 3d not implemented yet.')
                 pass
+
 
 
         # # save the image
