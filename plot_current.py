@@ -20,9 +20,9 @@ run_parallel = 1
 # q_col = 'force_norm'
 q_col = 'damage'
 
-# cmap_name = 'viridis'
+cmap_name = 'viridis'
 # cmap_name = 'Greys'
-cmap_name = 'cividis'
+# cmap_name = 'cividis'
 
 ## # load the main experiment setup data
 exp_b = load_setup.read_setup('data/hdf5/all.h5')

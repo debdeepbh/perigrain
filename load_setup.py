@@ -165,6 +165,12 @@ class Experiment_brief(object):
                 else:
                     ax.scatter(Pos[:,0], Pos[:,1], Pos[:,2], c = colors, s = d_sz, marker = '.', linewidth = 0, cmap=cmap_name)
 
+                ## colorlimit needs to be set for every set of scatterplot, not in the end
+                ## need to set clim every time a particle is plotted to maintain correct color reproduction. Otherwise, with P.q = np.ones(N) produces zero-colors, e.g. for damage
+                ## This is some weird bug for matplotlib!!
+                if colorlim is not None:
+                    plt.clim(colorlim[0], colorlim[1])
+
             if plot_bdry_nodes:
                 bd = P_b.nonlocal_bdry_nodes
                 # time.sleep(5.5)
@@ -344,8 +350,6 @@ class Experiment_brief(object):
         if remove_axes:
             ax.set_axis_off()
 
-        if colorlim is not None:
-            plt.clim(colorlim[0], colorlim[1])
         if colorbar:
             if dim==2:
                 plt.colorbar()
