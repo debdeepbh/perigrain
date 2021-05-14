@@ -11,8 +11,8 @@ stds=(
 #0.6
 )
 
-resume="no"
-#resume="yes"
+#resume="no"
+resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -137,6 +137,12 @@ function run {
 	# copy npy files
 	cp {output,$dir}/V.npy
 
+	if [ "$1" = "frac" ]
+	then
+	    python3 gen_damage_data.py
+	fi 
+	
+
 	## copy latest timestep
 	#dir=${str_pref}$std$1
 	#mkdir -p $dir
@@ -158,8 +164,8 @@ function run {
 }
 
 # call function
-run 'frac'
-run ''
+#run 'frac'
+#run ''
 
 # generate experiment setup
 #python3 $path/setup.py 0.2
@@ -168,6 +174,7 @@ run ''
 #make getfresh_py
 
 #######################################################################
+# run later
 
 function walldata {
      #generate argument list of files with csv filenames
@@ -195,12 +202,11 @@ function walldata {
 ## To produce plots with and without fracture, turn of `run` and `run frac`
 stds=(
 #0
-0.2
+#0.2
 0.2frac
 )
 
 walldata ''
-#walldata 'frac'
 
 
 function wallplot {
@@ -216,7 +222,5 @@ function wallplot {
 }
 
 wallplot ''
-#wallplot 'frac'
-#sxiv $str_pref"force_plot.png" &
 
 

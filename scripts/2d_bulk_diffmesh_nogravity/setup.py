@@ -38,10 +38,17 @@ min_particle_spacing = contact_radius*1.001
 # wall_top    = 50e-3
 # wall_bottom = -50e-3
 
-wall_left   = -10e-3
-wall_right  = 10e-3
-wall_top    = 10e-3
-wall_bottom = -10e-3
+## smallest
+# wall_left   = -10e-3
+# wall_right  = 10e-3
+# wall_top    = 10e-3
+# wall_bottom = -10e-3
+
+## slightly bigger, needs twice the time 
+wall_left   = -20e-3
+wall_right  = 20e-3
+wall_top    = 20e-3
+wall_bottom = -20e-3
 
 # wall_bottom = -5e-3
 wall = Wall(1, wall_left, wall_right, wall_top, wall_bottom)
@@ -72,7 +79,7 @@ SL = ShapeList()
 
 # append each shape with own scaling
 for i in range(msh.count()):
-    SL.append(shape=shape_dict.perturbed_disk(seed=i, steps=16, scaling=msh.incircle_rad[i], std= float(sys.argv[1]) ), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.5))
+    SL.append(shape=shape_dict.perturbed_disk(seed=i, steps=16, scaling=msh.incircle_rad[i], std= float(sys.argv[1]) ), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
 
 # generate the mesh for each shape
 particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=False)
