@@ -158,8 +158,8 @@ function run {
 }
 
 # call function
-#run ''
 run 'frac'
+run ''
 
 # generate experiment setup
 #python3 $path/setup.py 0.2
@@ -193,11 +193,11 @@ function walldata {
 }
 
 ## To produce plots with and without fracture, turn of `run` and `run frac`
-#stds=(
+stds=(
 #0
-#0.2
-##0.2frac
-#)
+0.2
+0.2frac
+)
 
 walldata ''
 #walldata 'frac'
