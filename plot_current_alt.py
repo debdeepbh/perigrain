@@ -1,3 +1,4 @@
+## Full implementation of plotting 
 import numpy as np
 from multiprocessing import Pool
 # from pathos.multiprocessing import ProcessingPool as Pool
@@ -80,24 +81,9 @@ def write_img(t):
 
     for i in range(len(PArr)):
         P = PArr[i]
-
-
-        if (i==3):
-            # P.q[0] = 1.0
-            # print('i=',i, 'P.q=', P.q)
-            # plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], s = 5, c = np.array([P.q]), linewidth=0)
             plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], s = 5, c = P.q, linewidth=0)
-            # plt.clim(0, 1)
+            plt.clim(0, 1)
 
-        if (i==4):
-            # print('i=',i, 'P.q=', P.q)
-            # plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], s = 5, c = np.array([P.q]), linewidth=0)
-            plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], s = 5, c = 'blue', linewidth=0)
-
-    
-    # print('i=3', PArr[3].q)
-    # print('i=4', PArr[4].q)
-             
 
     plt.colorbar()
     plt.clim(0, 1)
