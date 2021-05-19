@@ -6,13 +6,15 @@ logfile=$path/output.log
 
 stds=(
 #0
-0.2
+0.1
+#0.2
+0.3
 #0.4
 #0.6
 )
 
-#resume="no"
-resume="yes"
+resume="no"
+#resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -165,7 +167,7 @@ function run {
 
 # call function
 #run 'frac'
-#run ''
+run ''
 
 # generate experiment setup
 #python3 $path/setup.py 0.2
@@ -202,8 +204,12 @@ function walldata {
 ## To produce plots with and without fracture, turn of `run` and `run frac`
 stds=(
 #0
-#0.2
+0.1
+0.2
+0.3
+0.1frac
 0.2frac
+0.3frac
 )
 
 walldata ''
