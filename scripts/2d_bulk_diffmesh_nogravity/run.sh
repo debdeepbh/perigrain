@@ -166,7 +166,7 @@ function run {
 }
 
 # call function
-run 'frac'
+#run 'frac'
 #run ''
 
 # generate experiment setup
@@ -211,10 +211,12 @@ stds=(
 #0.2
 #0.3
 #0.4
-0.1frac
-0.2frac
-0.3frac
+#0.1frac
+#0.2frac
+#0.3frac
 0.4frac
+plusfrac
+n4frac
 )
 
 walldata ''
@@ -230,7 +232,7 @@ function wallplot {
     done
     echo "All input strings: $args"
     #python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
-    python3 $path/plot_force.py $args $str_pref
+    python3 $path/gen_plots.py $args $str_pref 'dummy'
 }
 
 wallplot ''

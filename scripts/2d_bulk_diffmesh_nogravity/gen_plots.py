@@ -100,7 +100,6 @@ for i in range(t_i):
 # plt.xlim(20, 40)
 
 plt.ylabel(r'$|F_y^{top}|$ (N)')
-plt.xlim(0.4, 0.7)
 # plt.ylabel('Volume fraction')
 
 
@@ -109,17 +108,23 @@ plt.grid()
 plt.gca().legend()
 # plt.show()
 # plt.savefig(argv[-1], dpi=300, bbox_inches='tight')
-plt.savefig(str_pref+'force_plot.png', dpi=300, bbox_inches='tight')
+filename = str_pref+'force_plot.png'
+
+filename = str_pref+'damage_plot.png'
+print('saving to', filename)
+plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 
 #######################################################################
 for i in range(t_i):
     phi = [vols[i]/(v.wall_v * v.wall_h) for v in d[i]]
-    plt.plot([ dam for dam in damage[i]],  label = r'$\sigma=$ '+labels[i])
+    plt.plot([ np.mean(dam) for dam in damage[i]],  label = r'$\sigma=$ '+labels[i])
 
 plt.ylabel('damage')
 
 plt.grid()
 plt.gca().legend()
-plt.savefig(str_pref+'damage_plot.png', dpi=300, bbox_inches='tight')
+filename = str_pref+'damage_plot.png'
+print('saving to', filename)
+plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
