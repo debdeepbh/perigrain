@@ -13,8 +13,8 @@ stds=(
 #0.6
 )
 
-resume="no"
-#resume="yes"
+#resume="no"
+resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -204,10 +204,10 @@ function walldata {
 ## To produce plots with and without fracture, turn of `run` and `run frac`
 stds=(
 #0
-0.1
-0.2
-0.3
-0.4
+#0.1
+#0.2
+#0.3
+#0.4
 0.1frac
 0.2frac
 0.3frac
@@ -226,7 +226,8 @@ function wallplot {
 	#args="$args ${shape}$1"
     done
     echo "All input strings: $args"
-    python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
+    #python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
+    python3 $path/plot_force.py $args $str_pref
 }
 
 wallplot ''

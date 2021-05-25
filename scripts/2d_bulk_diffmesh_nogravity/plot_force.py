@@ -19,6 +19,7 @@ print('str_pref is = ', str_pref)
 # print('range: ', range(t_i))
 
 d = []
+damage = []
 labels = []
 vols = []
 for i in range(t_i):
@@ -26,6 +27,7 @@ for i in range(t_i):
     print('shape', shape)
     # dir=${str_pref}$std$1
     d.append(np.load(str_pref+shape+'/h5/V.npy', allow_pickle=True))
+    damage.append(np.load(str_pref+shape+'/h5/damage.npy', allow_pickle=True))
     # print('loading'+str_pref+shape+'.npy')
     labels.append(shape)
 
@@ -106,4 +108,18 @@ plt.grid()
 # plt.autoscale(tight=True)
 plt.gca().legend()
 # plt.show()
-plt.savefig(argv[-1], dpi=300, bbox_inches='tight')
+# plt.savefig(argv[-1], dpi=300, bbox_inches='tight')
+plt.savefig(str_pref+'force_plot.png', dpi=300, bbox_inches='tight')
+plt.close()
+
+#######################################################################
+for i in range(t_i):
+    phi = [vols[i]/(v.wall_v * v.wall_h) for v in d[i]]
+    plt.plot([ dam for dam in damage[i]],  label = r'$\sigma=$ '+labels[i])
+
+plt.ylabel('damage')
+
+plt.grid()
+plt.gca().legend()
+plt.savefig(str_pref+'damage_plot.png', dpi=300, bbox_inches='tight')
+plt.close()

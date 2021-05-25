@@ -1,3 +1,6 @@
+import sys, os
+sys.path.append(os.getcwd())
+
 import numpy as np
 from multiprocessing import Pool
 import time
@@ -13,22 +16,25 @@ import matplotlib.pyplot as plt
 import matplotlib
 # matplotlib.use('Agg')
 
-# saving to file
-npy_file = 'output/damage.npy'
-#######################################################################
-loc = 'output/hdf5/'
-plti = read_plotinfo(loc+'plotinfo.h5')
-dim = plti.dim
 
-# override here
-if len(argv) == 2:
-    plti.fc = int(argv[1])
-if len(argv) == 3:
+if len(argv) == 4:
+    loc = str(argv[3])
+    # saving to file
+    npy_file = loc+'damage.npy'
+    plti = read_plotinfo(loc+'plotinfo.h5')
+    dim = plti.dim
+
     plti.fc = int(argv[1])
     plti.lc = int(argv[2])
+else:
+    print('Incorrect number of arguments')
 
-# load the main experiment setup data
-exp_b = load_setup.read_setup('data/hdf5/all.h5')
+## # load the main experiment setup data
+exp_b = load_setup.read_setup(loc+'all.h5')
+vol = exp_b.total_volume()
+mass = exp_b.total_mass()
+print('Total volume:', vol)
+print('Total mass:', mass)
 ######################################################################
 def compute_all(t):
     print(t, end = ' ', flush=True)
@@ -79,47 +85,3 @@ print('Time taken: ', time.time() - start)
 print('Saving to disk: ', npy_file)
 np.save(npy_file, V)
 
-# damage of individual particles in time
-# for i in range(len(V[0])):
-    # vv = [v[i] for v in V]
-    # plt.stem(vv)
-    # plt.savefig('stem'+str(i)+'.png')
-    # plt.close()
-
-#######################################################################
-# damage of all particles
-
-plt.matshow(V)
-plt.xlabel('particle')
-plt.ylabel('timestep')
-plt.colorbar()
-plt.clim(0, 1)
-# plt.show()
-plt.savefig('output/img/damage_mat.png')
-plt.close()
-
-#######################################################################
-# mean damage of the bulk
-bulk_d = [np.mean(d) for d in V]
-plt.plot(bulk_d)
-plt.savefig('output/img/bulk_damage.png')
-plt.close()
-
-#######################################################################
-# damage distribution at the end
-bins = 10
-plt.hist(V[-1], bins=bins)
-plt.savefig('output/img/end_damage_hist.png')
-plt.close()
-
-#######################################################################
-# damage distribution at different time points
-for i in range(len(V)):
-    plt.hist(V[i], bins=bins)
-    plt.xlim([0,1])
-    plt.ylim([0,len(V[0])])
-    plt.savefig('output/img/damage_hist_'+('%05d' % i)+'.png')
-    plt.close()
-
-#######################################################################
-# initial particle size and damage
