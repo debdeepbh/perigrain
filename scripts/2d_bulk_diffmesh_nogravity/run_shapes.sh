@@ -5,12 +5,9 @@ logfile=$path/output.log
 #gmsh meshdata/3d/3d_sphere_small.geo -3
 
 stds=(
-#0
-#0.1
-0.2
-#0.3
-#0.4
-#0.6
+#pertdisk
+plus
+n4
 )
 
 resume="no"
@@ -57,7 +54,7 @@ function run {
 	if [ "$resume" = "no" ]
 	then
 	    # generate experiment setup
-	    python3 $path/setup.py $std >> $logfile
+	    python3 $path/setup_shapes.py $std >> $logfile
 	    # copy the data
 	    make getfresh_py >> $logfile
 	else
@@ -203,13 +200,8 @@ function walldata {
 
 ## To produce plots with and without fracture, turn of `run` and `run frac`
 stds=(
-#0
-0.1
-0.2
-0.3
-0.1frac
-0.2frac
-0.3frac
+plusfrac
+n4frac
 )
 
 walldata ''
