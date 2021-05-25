@@ -198,6 +198,9 @@ function walldata {
 
 	echo "Running: python3 $path/genwallreaction.py 1 $last $data_loc"
 	python3 $path/genwallreaction.py 1 $last $data_loc
+
+	echo "Running: python3 $path/gendamagedata.py 1 $last $data_loc"
+	python3 $path/gendamagedata.py 1 $last $data_loc
     done
 }
 

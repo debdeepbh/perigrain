@@ -79,7 +79,17 @@ SL = ShapeList()
 
 # append each shape with own scaling
 for i in range(msh.count()):
-    SL.append(shape=shape_dict.perturbed_disk(seed=i, steps=16, scaling=msh.incircle_rad[i], std= float(sys.argv[1]) ), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
+    if sys.argv[1] == 'pertdisk':
+        pertdisk_std = 0.3
+        SL.append(shape=shape_dict.perturbed_disk(seed=i, steps=16, scaling=msh.incircle_rad[i], std=pertdisk_std ), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
+    elif sys.argv[1] == 'plus':
+        plus_ratio = 0.2
+        SL.append(shape=shape_dict.plus_inscribed(notch_dist=plus_ratio, scaling=msh.incircle_rad[i]), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
+# plus_inscribed(notch_dist=0.2)
+    elif sys.argv[1] == 'n4':
+        SL.append(shape=shape_dict.small_disk(steps=4, scaling=msh.incircle_rad[i]), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
+    else:
+        SL.append(shape=shape_dict.perturbed_disk(seed=i, steps=16, scaling=msh.incircle_rad[i], std= float(sys.argv[1]) ), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
 
 # generate the mesh for each shape
 particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=False)
