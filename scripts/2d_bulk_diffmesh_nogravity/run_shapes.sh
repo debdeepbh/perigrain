@@ -10,8 +10,8 @@ plus
 n4
 )
 
-resume="no"
-#resume="yes"
+#resume="no"
+resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -163,7 +163,7 @@ function run {
 }
 
 # call function
-run 'frac'
+#run 'frac'
 #run ''
 
 # generate experiment setup
@@ -200,11 +200,16 @@ function walldata {
 
 ## To produce plots with and without fracture, turn of `run` and `run frac`
 stds=(
-plusfrac
-n4frac
+#0.4frac
+#n4frac
+#plusfrac
+0.1frac
+0.2frac
+0.3frac
+0.4frac
 )
 
-walldata ''
+#walldata ''
 
 
 function wallplot {

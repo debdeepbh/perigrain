@@ -59,10 +59,10 @@ for i in range(t_i):
     # print('phi = ', phi)
 
     # top wall force 
-    plt.plot([ np.abs(v.wall_reaction[2,1]) for v in d[i]],  label = r'$\sigma=$ '+labels[i])
+    # plt.plot([ np.abs(v.wall_reaction[2,1]) for v in d[i]],  label = r'$\sigma=$ '+labels[i])
     
     # volume fraction vs top wall force
-    # plt.plot(phi, [ np.abs(v.wall_reaction[2,1]) for v in d[i]],  label = r'$\sigma=$ '+labels[i])
+    plt.plot(phi, [ np.abs(v.wall_reaction[2,1]) for v in d[i]],  label = r'$\sigma=$ '+labels[i])
 
     # total force in time
     # plt.plot([ (np.abs(v.wall_reaction[3,1]) +
@@ -98,6 +98,7 @@ for i in range(t_i):
 # plt.xlim(20, 40)
 
 plt.ylabel(r'$|F_y^{top}|$ (N)')
+plt.xlim(0.4, 0.7)
 # plt.ylabel('Volume fraction')
 
 

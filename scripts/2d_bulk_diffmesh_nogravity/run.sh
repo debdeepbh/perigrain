@@ -7,9 +7,9 @@ logfile=$path/output.log
 stds=(
 #0
 #0.1
-0.2
+#0.2
 #0.3
-#0.4
+0.4
 #0.6
 )
 
@@ -207,9 +207,11 @@ stds=(
 0.1
 0.2
 0.3
+0.4
 0.1frac
 0.2frac
 0.3frac
+0.4frac
 )
 
 walldata ''
