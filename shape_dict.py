@@ -408,12 +408,11 @@ def plus(ratio = 0.25):
 
     return Shape(P, nonconvex_interceptor)
 
-def plus_inscribed(notch_dist = 0.25):
+def plus_inscribed(notch_dist = 0.25, scaling = 1e-3):
     """ a plus with maximum possible lenth while being inscribed in a disk of radius 1e-3
     The maximum possible thickness is 
     : notch_dist: the distance from the center of disk to the inner notch, betwen 0 and 1 
     """
-    scaling = 1e-3;
 
     short = notch_dist/np.sqrt(2)
     long = np.sqrt(1 - short**2)
