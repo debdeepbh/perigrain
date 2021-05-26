@@ -1,4 +1,6 @@
 import numpy as np
+# import pandas as pd
+import h5py
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -38,7 +40,14 @@ for i in range(t_i):
     # mass = exp_b.total_mass()
     # print('Total volume:', vol)
     # print('Total mass:', mass)
+
+# random identifying name to attach to filename in the beginning
+t_name = argv[-1]
     
+filename = str_pref+t_name+'_df_forces.h5'
+print('saving to', filename)
+df_forces = h5py.File(filename, 'w')
+
 ## avg pressure vs volume fraction
 for i in range(t_i):
     # lower bound
@@ -64,7 +73,12 @@ for i in range(t_i):
     # plt.plot([ np.abs(v.wall_reaction[2,1]) for v in d[i]],  label = r'$\sigma=$ '+labels[i])
     
     # volume fraction vs top wall force
-    plt.plot(phi, [ np.abs(v.wall_reaction[2,1]) for v in d[i]],  label = r'$\sigma=$ '+labels[i])
+    data = [ np.abs(v.wall_reaction[2,1]) for v in d[i]]
+    plt.plot(phi, data,  label = r'$\sigma=$ '+labels[i])
+
+    # df_forces.create_dataset(labels[i], data=np.array([phi, data]))
+    df_forces.create_dataset(labels[i]+'/volfrac', data=phi)
+    df_forces.create_dataset(labels[i]+'/topforce', data=data)
 
     # total force in time
     # plt.plot([ (np.abs(v.wall_reaction[3,1]) +
@@ -96,6 +110,7 @@ for i in range(t_i):
             # label = r'$\sum |F|$ '+labels[i]
             # )
 
+df_forces.close()
 # force limits x axis
 # plt.xlim(20, 40)
 
@@ -108,23 +123,33 @@ plt.grid()
 plt.gca().legend()
 # plt.show()
 # plt.savefig(argv[-1], dpi=300, bbox_inches='tight')
-filename = str_pref+'force_plot.png'
-
-filename = str_pref+'damage_plot.png'
+filename = str_pref+t_name+'_force_plot.png'
 print('saving to', filename)
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
 
 #######################################################################
+# df_damage = pd.DataFrame()
+
+filename = str_pref+t_name+'_df_damage.h5'
+print('saving to', filename)
+df_damage = h5py.File(filename, 'w')
+
 for i in range(t_i):
     phi = [vols[i]/(v.wall_v * v.wall_h) for v in d[i]]
-    plt.plot([ np.mean(dam) for dam in damage[i]],  label = r'$\sigma=$ '+labels[i])
+    data = [ np.mean(dam) for dam in damage[i]]
+    plt.plot(data,  label = r'$\sigma=$ '+labels[i])
+
+    # df_damage[labels[i]] =  data
+    df_damage.create_dataset(labels[i], data=data)
+df_damage.close()
 
 plt.ylabel('damage')
 
 plt.grid()
 plt.gca().legend()
-filename = str_pref+'damage_plot.png'
+filename = str_pref+t_name+'_damage_plot.png'
 print('saving to', filename)
 plt.savefig(filename, dpi=300, bbox_inches='tight')
 plt.close()
+

@@ -211,16 +211,20 @@ stds=(
 #0.2
 #0.3
 #0.4
-#0.1frac
-#0.2frac
-#0.3frac
+0.1frac
+0.2frac
+0.3frac
 0.4frac
-plusfrac
-n4frac
+#plusfrac
+#n4frac
 )
+#walldata ''
 
-walldata ''
 
+# identifying filename prefix for h5 and png file generated
+# a name for the collection  defined in stds
+#t_name='shapes' 
+t_name='roundness'
 
 function wallplot {
      #generate argument list of files with csv filenames
@@ -232,8 +236,9 @@ function wallplot {
     done
     echo "All input strings: $args"
     #python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
-    python3 $path/gen_plots.py $args $str_pref 'dummy'
+    python3 $path/gen_combined_plots.py $args $str_pref $t_name
 }
+
 
 wallplot ''
 
