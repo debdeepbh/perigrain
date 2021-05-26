@@ -128,15 +128,9 @@ for 2D.
 
 
 # Todo
-- [x] Save connectivity data for resuming
-	- [x] convert NbdArr to connectivity in C++
-	- [x] Save connectivity to file
-	- [x] Load connectivity on resume
-	- [x] [unnecessary] Add config option to load connectivity on resume (default: yes, if breaking enabled)
-	- [x] Python loading connectivity from saved h5 files
-	- [x] Plotting bonds
-	- [x] Computing damage
-	- [x] Test
+- [ ] Saving bulk data from all timesteps into h5 file with given options to compute different quantities
+	- [ ] Generate h5 files with options
+	- [ ] Plot from h5 files with options
 - [ ] Coffee 
 	- [ ] [running] changed `rho_scale` to `0.7` from `0.6`
 - [ ] Compression without gravity? (pre-computation of gravity takes too long)

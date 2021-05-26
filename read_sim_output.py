@@ -49,11 +49,6 @@ def read_plotinfo(plotinfo_file, read_dim=False, quiet=False):
 
     return PlotInfo(fc = first_counter, lc = last_counter, dt = dt, modulo = modulo, dim = dim)
 
-def read_wallinfo(wallinfo_file):
-    # print('Reading file', wallinfo_file)
-    p = h5py.File(wallinfo_file, "r")
-    return np.array(p['wall_info'])
-
 def update_wallinfo(wall_filename, wall):
     """ update wall info from filename, if exits
     """
@@ -61,7 +56,6 @@ def update_wallinfo(wall_filename, wall):
     if os.path.isfile(wall_filename):
         p = h5py.File(wall_filename, "r")
         wi = np.array(p['wall_info'])[:,0]
-        # wi = read_wallinfo(wall_filename)[:,0]
         if (len(wi)==4):
             # print(wi)
             wall.left        = wi[0]
@@ -86,6 +80,7 @@ def read_run_time(run_time_file):
     t_ind = np.array(p['t_ind'])
 
     return np.c_[t_ind, run_time]
+
 
 def populate_current(filename, exp_b, q = None, read_CurrPos=True, read_vel=False, read_acc=False, read_force=True, read_connectivity=False):
     """ Copies a main Experiment_breif setup class `exp_b` to a new Experiment_brief and then updates values from a given filename
@@ -123,27 +118,14 @@ def populate_current(filename, exp_b, q = None, read_CurrPos=True, read_vel=Fals
             ## Quantity to plot: examples
             if (q == 'force_norm'):
                 P.q = np.sqrt(np.sum(np.square(P.force), axis=1))
-            if (q == 'damage'):
+            elif (q == 'damage'):
                 P_orig = exp_b.PArr[pid]
                 N = len(P_orig.pos)
 
                 orig_nbrs = total_neighbors(P_orig.connectivity, N)
                 now_nbrs = total_neighbors(P.connectivity, N)
-
-                # make sure not dividing by zero: probably won't happen unless isolated notes are present 
+                # make sure not dividing by zero: probably won't happen unless isolated notes are present in the reference configuration
                 P.q = (orig_nbrs - now_nbrs)/ orig_nbrs
-
-                # debug
-                # if pid==3:
-                    # print('now_nbrs=',now_nbrs)
-                    # print('orig_nbrs=',orig_nbrs)
-                    # print('P.q=',P.q)
-
-                # print(orig_nbrs)
-                # print(now_nbrs)
-                # print(P.q)
-                # print('max:', np.amax(P.q))
-                # print('Done')
             elif (q == 'vel_norm'):
                 P.q = np.sqrt(np.sum(np.square(P.vel), axis=1)) 
             elif (q == 'vel_x_abs'):
@@ -152,6 +134,106 @@ def populate_current(filename, exp_b, q = None, read_CurrPos=True, read_vel=Fals
                 pass
 
     return t_exp_b
+
+def extract_bulk(t, loc, fields, exp_b, plti):
+    """ Extract bulk properties for a timestep
+    : return: a row in the same order as fields
+    """
+
+    print(t, end = ' ', flush=True)
+
+    out_row = []
+
+    # if wall info requested
+    wall_ind = ('wall_%05d' % t)
+    wall_filename = loc+wall_ind+".h5";
+    w = h5py.File(wall_filename, "r")
+
+    # if particle info requested
+    tc_ind = ('tc_%05d' % t)
+    h5_filename = loc+tc_ind+".h5";
+    f = h5py.File(h5_filename, "r")
+
+
+    for field in fields:
+        if field=='time':
+            tt = t * plti.dt * plti.modulo
+            out_row.append(tt)
+        elif field=='wall_loc':
+            out_row.append(np.array(w['wall_info'])[:,0])
+        elif field=='wall_dim':
+            wi = np.array(w['wall_info'])[:,0]
+            if len(wi) == 4:
+                w_h = wi[1] - wi[0]
+                w_v = wi[2] - wi[3]
+                out_row.append([w_h, w_v])
+            else:
+                w_1 = wi[1] - wi[0]
+                w_2 = wi[3] - wi[2]
+                w_3 = wi[5] - wi[4]
+                out_row.append([w_1, w_2, w_3])
+        elif field=='volume_fraction':
+            vol = exp_b.total_volume()
+            wi = np.array(w['wall_info'])[:,0]
+            if len(wi) == 4:
+                w_h = wi[1] - wi[0]
+                w_v = wi[2] - wi[3]
+                wall_vol = w_h * w_v
+            else:
+                w_1 = wi[1] - wi[0]
+                w_2 = wi[3] - wi[2]
+                w_3 = wi[5] - wi[4]
+                wall_vol = w_1 * w_2 * w_3
+            phi = vol/wall_vol
+            out_row.append(phi)
+
+        elif field=='wall_force':
+            out_row.append(np.array(w['reaction']))
+        elif field=='particle_force':
+            particle_force = []
+            for name in f:
+                if re.match(r'P_[0-9]+', name):
+                    pid = int(name[2:])
+                    sum_force = np.sum(np.array(f[name+'/force']), axis =0)
+                    particle_force.append(sum_force)
+            out_row.append(particle_force)
+
+        elif field=='particle_damage':
+            particle_damage = []
+            for name in f:
+                if re.match(r'P_[0-9]+', name):
+                    pid = int(name[2:])
+                    P_orig = exp_b.PArr[pid]
+                    N = len(P_orig.pos)
+                    P_connectivity   = np.array(f[name+'/Connectivity'])
+
+                    orig_nbrs = total_neighbors(P_orig.connectivity, N)
+                    now_nbrs = total_neighbors(P_connectivity, N)
+                    # make sure not dividing by zero: probably won't happen unless isolated notes are present in the reference configuration
+                    P_damage = np.mean((orig_nbrs - now_nbrs)/ orig_nbrs)
+                    particle_damage.append(P_damage)
+            out_row.append(particle_damage)
+
+        elif field=='bulk_damage':
+            particle_damage = []
+            for name in f:
+                if re.match(r'P_[0-9]+', name):
+                    pid = int(name[2:])
+                    P_orig = exp_b.PArr[pid]
+                    N = len(P_orig.pos)
+                    P_connectivity   = np.array(f[name+'/Connectivity'])
+
+                    orig_nbrs = total_neighbors(P_orig.connectivity, N)
+                    now_nbrs = total_neighbors(P_connectivity, N)
+                    # make sure not dividing by zero: probably won't happen unless isolated notes are present in the reference configuration
+                    P_damage = np.mean((orig_nbrs - now_nbrs)/ orig_nbrs)
+                    particle_damage.append(P_damage)
+            bulk_damage = np.mean(particle_damage)
+            out_row.append(bulk_damage)
+
+        else:
+            print('Incorrect field specified')
+    return out_row
 
 #######################################################################
 # plotting related random things
@@ -199,45 +281,6 @@ def read_force_val(t, loc, dim, get_f_sum=False, input_exp_b=None):
         f_sum = None
 
     return Val(f_sum=f_sum, wall_v=wall.get_v(), wall_h=wall.get_h(), wall_reaction=wall.reaction)
-
-# def read_reaction_frombulk(t, loc, dim, get_f_sum=False, input_exp_b=None):
-    # """ Compute wall reaction force from the bulk and the relative distance from the wall
-    # : get_f_sum: if true, reads the total force of all particles, provided input_exp_b is given
-    # : returns: class Val
-    # """
-    # if (dim ==2):
-        # wall = Wall()
-    # else:
-        # wall = Wall3d()
-    # print(t, end = ' ', flush=True)
-    # wall_ind = ('wall_%05d' % t)
-    # wall_filename = loc+wall_ind+".h5";
-    # update_wallinfo(wall_filename, wall)
-
-    # tc_ind = ('tc_%05d' % t)
-    # h5_filename = loc+tc_ind+".h5";
-
-    # t_exp_b = populate_current(h5_filename, input_exp_b, q = None, read_CurrPos=True, read_vel=False, read_acc=False, read_force=False)
-    # PArr = t_exp_b.PArr
-    # f_sum = np.zeros((1, dim))
-
-    # for i in range(len(PArr)):
-        # # f_sum += np.sum(PArr[i].vol * PArr[i].force, axis =0)
-        # # f_sum += np.sum(PArr[i].vol * PArr[i].rho * PArr[i].acc, axis =0)
-
-        # # top wall
-        # CurrPos_y = PArr[i].CurrPos[1]
-        # dist = np.abs(CurrPos_y - wall.top)
-        # C_r = input_exp_b.contact.contact_radius
-        # if dist < C_r :
-            # input_exp_b.contact.normal_stiffness * (C_r - dist) * PArr[i].vol[
-
-
-
-    # f_sum = f_sum[0]
-
-    # return Val(f_sum=f_sum, wall_v=wall.get_v(), wall_h=wall.get_h(), wall_reaction=wall.reaction)
-
 
 #######################################################################
 ## bar
