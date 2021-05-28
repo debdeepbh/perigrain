@@ -5,8 +5,8 @@
 #include <fstream>
 #include <algorithm>
 
-#include "particle/timeloop.h"
-#include "particle/contact.h"
+//#include "particle/timeloop.h"
+//#include "particle/contact.h"
 
 //using namespace std;
 
@@ -31,6 +31,9 @@ public:
 
     bool self_contact;
     double self_contact_rad;
+
+    // torque
+    bool enable_torque;
 
     // messing with the wall
     double wall_left, wall_right, wall_top, wall_bottom;
@@ -66,6 +69,8 @@ public:
 	// self_contact
 	self_contact = 1;
 	self_contact_rad = -1;
+
+	enable_torque = 0;
 
 	// -1 means not specified
 	normal_stiffness = -1;
@@ -170,6 +175,10 @@ public:
 		    self_contact_rad = std::stod(value);
 		}
 
+		else if (name == "enable_torque") {
+		    enable_torque = std::stoi(value);
+		}
+
 		else if (name == "wall_left") {
 		    wall_left = std::stod(value);
 		}
@@ -271,96 +280,6 @@ public:
 	//std::cout << "speed_wall_top: " << speed_wall_top << std::endl;
 	std::cout << "----------------------------------------------------------------------" << std::endl;
     };
-
-template <unsigned dim>
-void apply(Timeloop &TL, Contact &CN, RectWall<dim> &Wall){
-    // update from config values
-    TL.timesteps = timesteps;
-    TL.modulo = modulo;
-    TL.dt = dt;
-    TL.do_resume = do_resume;
-    TL.wall_resume = wall_resume;
-    TL.resume_ind = resume_ind;
-    TL.save_file = save_file;
-    TL.enable_fracture = enable_fracture;
-    TL.run_parallel = is_parallel;
-
-    TL.gradient_extforce = gradient_extforce;
-    TL.extforce_maxstep = extforce_maxstep;
-
-    CN.allow_damping = allow_damping;
-    CN.allow_friction = allow_friction;
-
-
-    CN.nl_bdry_only = nl_bdry_only;
-
-    // Override if specified in config file
-    if (damping_ratio != (-1)) {
-	CN.damping_ratio = damping_ratio;
-    }
-    if (friction_coefficient != (-1)) {
-	CN.friction_coefficient = friction_coefficient;
-    }
-    if (normal_stiffness != (-1)) {
-	CN.normal_stiffness = normal_stiffness;
-    }
-
-    // self-contact
-    CN.self_contact = self_contact;
-
-    if (self_contact_rad != (-1)) {
-	CN.self_contact_rad = self_contact_rad;
-    } else {
-	CN.self_contact_rad = CN.contact_rad;
-    }
-
-    // wall
-    if (wall_top != (-999)) {
-	if (dim ==2) {
-	    Wall.top = wall_top;
-	}
-	else{
-	    Wall.z_max = wall_top;
-	}
-    }
-    if (wall_right != (-999)) {
-	if (dim ==2) {
-	    Wall.right = wall_right;
-	}
-	else{
-	    Wall.y_max = wall_right;
-	}
-    }
-
-    // Load wall dimension (if defined) and speed 
-    if (dim==2) {
-	if (wall_left != (-999)) { Wall.left = wall_left; }
-	if (wall_right != (-999)) { Wall.right = wall_right; }
-	if (wall_top != (-999)) { Wall.top = wall_top; }
-	if (wall_bottom != (-999)) { Wall.bottom = wall_bottom; }
-
-	Wall.speed_left = speed_wall_left;
-	Wall.speed_right = speed_wall_right;
-	Wall.speed_top = speed_wall_top;
-	Wall.speed_bottom = speed_wall_bottom;
-    }
-    else{
-	if (wall_x_min != (-999)) { Wall.x_min = wall_x_min; }
-	if (wall_y_min != (-999)) { Wall.y_min = wall_y_min; }
-	if (wall_z_min != (-999)) { Wall.z_min = wall_z_min; }
-	if (wall_x_max != (-999)) { Wall.x_max = wall_x_max; }
-	if (wall_y_max != (-999)) { Wall.y_max = wall_y_max; }
-	if (wall_z_max != (-999)) { Wall.z_max = wall_z_max; }
-
-	Wall.speed_x_min = speed_wall_x_min;
-	Wall.speed_y_min = speed_wall_y_min;
-	Wall.speed_z_min = speed_wall_z_min;
-	Wall.speed_x_max = speed_wall_x_max;
-	Wall.speed_y_max = speed_wall_y_max;
-	Wall.speed_z_max = speed_wall_z_max;
-    }
-
-};
 
 private:
     /* data */

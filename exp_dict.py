@@ -143,6 +143,10 @@ class Particle(object):
 
         self.material = material
 
+        # torque info
+        self.torque_axis = 2
+        self.torque_val = 0
+
         # extra properties
         self.movable = 1
         self.breakable = 1
@@ -770,6 +774,10 @@ class Experiment(object):
                     f.create_dataset(p_ind + '/rho', data= [[particle.material.rho]])
                     f.create_dataset(p_ind + '/cnot', data= [[particle.material.cnot]])
                     f.create_dataset(p_ind + '/snot', data= [[particle.material.snot]])
+
+                    # torque info
+                    f.create_dataset(p_ind + '/torque_axis', data= [[particle.torque_axis]])
+                    f.create_dataset(p_ind + '/torque_val', data= [[particle.torque_val]])
 
                     # extra properties
                     f.create_dataset(p_ind + '/movable', data= [[particle.movable]])
@@ -2556,6 +2564,168 @@ def coffee_diffmesh():
         u_dir = blade.pos[j] / r
         t_dir = perp @ u_dir
         blade.vel[j] += v_val * r * t_dir
+
+    # contact properties
+    normal_stiffness = 18 * material_dict.peridem(delta).bulk_modulus /( np.pi * np.power(delta,4));
+    damping_ratio = 0.8
+    friction_coefficient = 0.8
+    contact  = Contact(contact_radius, normal_stiffness, damping_ratio, friction_coefficient)
+
+    return Experiment(particles, wall, contact)
+
+def wheel():
+    """ Wheel on flat surface
+    """
+
+    # whether or not to add particles
+    add_particles = 0
+    wheel_rad = 3e-3
+
+    # delta = 1e-3
+    # delta = 10e-3
+    delta = 1e-3
+    meshsize = delta/2
+    contact_radius = delta/4
+
+    # blade_l = 5e-3
+    # blade_s = 0.5e-3
+    blade_l = 70e-3
+    blade_s = 5e-3
+
+    # particle toughness
+    Gnot_scale = 0.7
+    # rho_scale = 0.6
+    # attempt to modify further
+    rho_scale = 0.7
+
+    # at least this much space to leave between particles. Will get halved while selecting max radius
+    min_particle_spacing = contact_radius*1.001
+
+    # wall info
+    # cl = 6e-3
+    cl = 10e-3 # 10 cm
+
+    wall_left   = -cl
+    wall_right  = cl
+    wall_top    = cl/2
+    wall_bottom = -cl/2
+    # wall_bottom = -5e-3
+    wall = Wall(1, wall_left, wall_right, wall_top, wall_bottom)
+
+    # particle generation boundary
+    c = min_particle_spacing/2
+    P = np.array([
+        [wall_left + c, wall_bottom + c ],
+        [wall_right - c, wall_bottom + c],
+        # [wall_right - c, wall_top - c],
+        # [wall_left + c, wall_top - c]
+        ## only bottom half
+        [wall_right - c, 0 - blade_s - c],
+        [wall_left + c, 0-blade_s - c]
+
+        ])
+
+
+    # Create a list of shapes
+    SL = ShapeList()
+
+    # wheel
+    # SL.append(shape=shape_dict.small_disk(scaling=wheel_rad) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    SL.append(shape=shape_dict.small_disk(scaling=wheel_rad) , count=2, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    # SL.append(shape=shape_dict.plank(l=wheel_rad, s=wheel_rad) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+
+
+    if add_particles:
+        # particle generation spacing
+        # P_meshsize = 3.5e-3
+        P_meshsize = 35e-3 # cm order
+        msh = get_incenter_mesh_loc(P, P_meshsize, modify_nodal_circles= True, gen_bdry = False )
+
+        msh.trim(min_rad = 6e-3 + min_particle_spacing/2)
+
+        # reduce radius to avoid contact
+        msh.incircle_rad -= min_particle_spacing/2
+        msh.info()
+        msh.plot(plot_edge = True)
+        ###########################
+        # particles
+        # append each shape with own scaling
+        for i in range(msh.count()):
+            SL.append(shape=shape_dict.perturbed_disk(steps=16, scaling=msh.incircle_rad[i]), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, rho_scale=rho_scale, Gnot_scale=Gnot_scale))
+
+    # generate the mesh for each shape
+    particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=False)
+
+    # wheel location
+    move_diag = 0e-3
+    particles[0][0].shift( [move_diag+wall_left+wheel_rad+contact_radius*2, move_diag+wall_bottom + wheel_rad + contact_radius])
+
+    # wheel-2
+    move_diag = 0e-3
+    particles[0][1].shift( [wall_right-wheel_rad-move_diag-contact_radius*2, move_diag+wall_bottom + wheel_rad + contact_radius])
+
+    ## applying torque
+    wheel = particles[0][0]
+    wheel.breakable = 0
+    wheel.stoppable = 1
+
+    # 1000 RPM (pretty high for burr coffee grinder) = 1000 * 2 * pi / 60 (rad/s) ~ 104 rad/s
+    # v_val = 1000
+    v_val = -600
+
+    perp = np.array([[0, -1], [1, 0]])
+
+    # r = np.sqrt( np.sum(blade.pos[0]**2) )
+    # u_dir = blade.pos[0] / r
+    # t_dir = perp @ u_dir 
+
+    # print(blade.vel[0])
+    # print(u_dir)
+    # print(t_dir)
+
+    #gravity
+    g_val = -1e3
+
+    centroid = np.mean(wheel.pos + wheel.disp, axis=0)
+    print('centroid', centroid)
+
+    # initial angular velcity
+    # for j in range(len(wheel.pos)):
+        # r_vec = (wheel.pos[j] - centroid)
+        # r = np.sqrt( np.sum(r_vec**2) )
+        # u_dir = r_vec / r
+        # t_dir = perp @ u_dir
+        # wheel.vel[j] += v_val * r * t_dir
+
+    #torque
+    wheel.torque_axis = 2
+    wheel.torque_val = -1e6
+    # gravity
+    wheel.extforce += [0, g_val * wheel.material.rho]
+
+
+    # wheel-2 torque
+    particles[0][1].torque_axis = 2
+    particles[0][1].torque_val = 1e6
+    # gravity
+    particles[0][1].extforce += [0, g_val * wheel.material.rho]
+
+    # if add_particles:
+        # ## Apply transformation
+        # seed(1)
+        # g_val = -5e4
+        # for i in range(msh.count()):
+            # ## scaling is done while generating the mesh
+            # ## generate random rotation
+            # particles[i+1][0].rotate(0 + (random() * (2*np.pi - 0)) )
+            # particles[i+1][0].shift(msh.incenter[i])
+
+            # Initial data
+            # particles[0][1].vel += [0, -20]
+            # particles[i][0].acc += [0, g_val]
+            # particles[i][0].extforce += [0, g_val * particles[i][0].material.rho]
+        
+        ###########################
 
     # contact properties
     normal_stiffness = 18 * material_dict.peridem(delta).bulk_modulus /( np.pi * np.power(delta,4));

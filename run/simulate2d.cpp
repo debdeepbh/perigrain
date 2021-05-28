@@ -40,17 +40,27 @@ int main(){
     // Allow nested parallel computation
     omp_set_nested(1);
 
-    // load from hdf5 files
-    auto PArr = load_particles<dim>();
-    Contact CN = load_contact();
-    RectWall<dim> Wall = load_wall<dim>();
-    Timeloop TL(100);
 
     // Load config file
     auto CFGV = ConfigVal();
     CFGV.read_file("config/main.conf");
+
+    // load from hdf5 files
+    //auto PArr = load_particles<dim>();
+    //Contact CN = load_contact();
+    //RectWall<dim> Wall = load_wall<dim>();
+    auto PArr = load_particles<dim>(CFGV);
+    Contact CN = load_contact(CFGV);
+    RectWall<dim> Wall = load_wall<dim>(CFGV);
+
+    // default value if not set
+    Timeloop TL(100);
+
     //CFGV.print();
-    CFGV.apply<dim>(TL, CN, Wall);
+    //CFGV.apply<dim>(TL, CN, Wall);
+    TL.apply_config(CFGV);
+    CN.apply_config(CFGV);
+    Wall.apply_config(CFGV);
 
     std::cout << "extforce_gradient" << TL.gradient_extforce << std::endl;
 

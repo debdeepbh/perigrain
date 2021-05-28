@@ -5,6 +5,8 @@
 #include <vector>
 using namespace Eigen;
 
+#include "read/read_config.h"
+
 #include "particle/particle2.h"
 //#include "particle/nbdarr.h"
 #include "compat/overloads.h"
@@ -79,6 +81,31 @@ public:
     std::cout << "const\t\t" << normal_stiffness << "\t" << friction_coefficient
               << "\t\t" << damping_ratio << std::endl;
   };
+
+void apply_config(ConfigVal CFGV) {
+    allow_damping  = allow_damping;
+    allow_friction = allow_friction;
+    nl_bdry_only   = nl_bdry_only;
+
+    // Override if specified in config file
+    if (CFGV.damping_ratio != (-1)) {
+	damping_ratio = CFGV.damping_ratio;
+    }
+    if (CFGV.friction_coefficient != (-1)) {
+	friction_coefficient = CFGV.friction_coefficient;
+    }
+    if (CFGV.normal_stiffness != (-1)) {
+	normal_stiffness = CFGV.normal_stiffness;
+    }
+
+    // self-contact
+    self_contact = CFGV.self_contact;
+    if (CFGV.self_contact_rad != (-1)) {
+	self_contact_rad = CFGV.self_contact_rad;
+    } else {
+	self_contact_rad = CFGV.self_contact_rad;
+    }
+};
 
 private:
   /* data */
@@ -223,6 +250,56 @@ void update_boundary(double dt){
 	z_max += speed_z_max * dt;
     }
 };
+
+void apply_config(ConfigVal CFGV) {
+    // wall
+    if (CFGV.wall_top != (-999)) {
+	if (dim ==2) {
+	    top = CFGV.wall_top;
+	}
+	else{
+	    z_max = CFGV.wall_top;
+	}
+    }
+    if (CFGV.wall_right != (-999)) {
+	if (dim ==2) {
+	    right = CFGV.wall_right;
+	}
+	else{
+	    y_max = CFGV.wall_right;
+	}
+    }
+
+    // Load wall dimension (if defined) and speed 
+    if (dim==2) {
+	if (CFGV.wall_left != (-999)) { left = CFGV.wall_left; }
+	if (CFGV.wall_right != (-999)) { right = CFGV.wall_right; }
+	if (CFGV.wall_top != (-999)) { top = CFGV.wall_top; }
+	if (CFGV.wall_bottom != (-999)) { bottom = CFGV.wall_bottom; }
+
+	speed_left = CFGV.speed_wall_left;
+	speed_right = CFGV.speed_wall_right;
+	speed_top = CFGV.speed_wall_top;
+	speed_bottom = CFGV.speed_wall_bottom;
+    }
+    else{
+	if (CFGV.wall_x_min != (-999)) { x_min = CFGV.wall_x_min; }
+	if (CFGV.wall_y_min != (-999)) { y_min = CFGV.wall_y_min; }
+	if (CFGV.wall_z_min != (-999)) { z_min = CFGV.wall_z_min; }
+	if (CFGV.wall_x_max != (-999)) { x_max = CFGV.wall_x_max; }
+	if (CFGV.wall_y_max != (-999)) { y_max = CFGV.wall_y_max; }
+	if (CFGV.wall_z_max != (-999)) { z_max = CFGV.wall_z_max; }
+
+	speed_x_min = CFGV.speed_wall_x_min;
+	speed_y_min = CFGV.speed_wall_y_min;
+	speed_z_min = CFGV.speed_wall_z_min;
+	speed_x_max = CFGV.speed_wall_x_max;
+	speed_y_max = CFGV.speed_wall_y_max;
+	speed_z_max = CFGV.speed_wall_z_max;
+    }
+
+};
+
 
 private:
 };

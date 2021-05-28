@@ -49,6 +49,11 @@ def read_plotinfo(plotinfo_file, read_dim=False, quiet=False):
 
     return PlotInfo(fc = first_counter, lc = last_counter, dt = dt, modulo = modulo, dim = dim)
 
+def read_wallinfo(wallinfo_file):
+    # print('Reading file', wallinfo_file)
+    p = h5py.File(wallinfo_file, "r")
+    return np.array(p['wall_info'])
+
 def update_wallinfo(wall_filename, wall):
     """ update wall info from filename, if exits
     """

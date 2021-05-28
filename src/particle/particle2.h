@@ -52,6 +52,10 @@ class ParticleN
 
 	bool break_bonds;
 
+	//torque
+	unsigned torque_axis;
+	double torque_val;
+
 
 	ParticleN ();
 

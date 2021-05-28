@@ -79,6 +79,12 @@ vector<ParticleN<2>> load_particles_univ_2(){
 	P.cnot = read_col<double>(data_loc+"cnot_univ"+file_suffix)[0];
 	P.snot = read_col<double>(data_loc+"snot_univ"+file_suffix)[0];
 
+	// read only if available
+	if (0) {
+	    P.torque_axis = read_col<unsigned>(data_loc+"torque_axis"+file_suffix)[0];
+	    P.torque_val = read_col<double>(data_loc+"torque_val"+file_suffix)[0];
+	}
+
 	PArr.push_back(P);
     }
 

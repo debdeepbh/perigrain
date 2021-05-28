@@ -1,10 +1,14 @@
 #ifndef lOAD_HDF5_H
 #define lOAD_HDF5_H 
+
 #include "read/rw_hdf5.h" 
 
 #include "particle/particle2.h"
 #include "particle/contact.h"
 #include "compat/overloads.h"
+
+#include "read/read_config.h"
+//#include "read/load_hdf5.h"
 
 #include <vector>
 using namespace std;
@@ -35,7 +39,7 @@ auto conn2NArr(vector<Matrix<unsigned, 1, 2>> Conn, unsigned nnodes){
 
 
 template <unsigned dim>
-vector<ParticleN<dim>> load_particles(){
+vector<ParticleN<dim>> load_particles(ConfigVal CFGV){
     string data_loc = "data/hdf5/";
     string h5file = "all.h5";
     string filename = data_loc + h5file;
@@ -99,6 +103,12 @@ vector<ParticleN<dim>> load_particles(){
 	P.movable = load_col<int>(filename, file_suffix+"/movable")[0];
 	P.breakable = load_col<int>(filename, file_suffix+"/breakable")[0];
 	P.stoppable = load_col<int>(filename, file_suffix+"/stoppable")[0];
+
+
+	if (CFGV.enable_torque) {
+	    P.torque_axis = load_col<unsigned>(filename, file_suffix+"/torque_axis")[0];
+	    P.torque_val = load_col<double>(filename, file_suffix+"/torque_val")[0];
+	}
 	
 	//// python output saves scalars
 	//P.delta = load_col<double>(filename, file_suffix+"/delta");
@@ -116,7 +126,7 @@ vector<ParticleN<dim>> load_particles(){
     return PArr;
 };
 
-Contact load_contact(){
+Contact load_contact(ConfigVal CFGV){
     Contact contact;
     string data_loc = "data/hdf5/";
     string h5file = "all.h5";
@@ -158,7 +168,7 @@ Contact load_contact(){
 
 
 template <unsigned dim>
-RectWall<dim> load_wall(){
+RectWall<dim> load_wall(ConfigVal CFGV){
     string data_loc = "data/hdf5/";
     string h5file = "all.h5";
     string filename = data_loc + h5file;

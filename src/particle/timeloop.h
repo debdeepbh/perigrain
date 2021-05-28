@@ -6,6 +6,8 @@
 #include <chrono>
 using namespace std::chrono;
 
+#include "read/read_config.h"
+
 #include "compat/overloads.h"
 #include "particle/particle2.h"
 #include "particle/timeloop.h"
@@ -75,6 +77,7 @@ public:
   unsigned first_counter, last_counter;
 
   bool gradient_extforce = 0;
+  bool enable_torque = 0;
   unsigned extforce_maxstep = 0;
 
   // saving the runtime
@@ -156,7 +159,25 @@ public:
     store_col<double>(rt_fp, "run_time", run_time);
     store_col<double>(rt_fp, "t_ind", t_ind);
     rt_fp.close();
-  }
+  };
+
+  void apply_config(ConfigVal CFGV) {
+    // update from config values
+    timesteps = CFGV.timesteps;
+    modulo = CFGV.modulo;
+    dt = CFGV.dt;
+    do_resume = CFGV.do_resume;
+    wall_resume = CFGV.wall_resume;
+    resume_ind = CFGV.resume_ind;
+    save_file = CFGV.save_file;
+    enable_fracture = CFGV.enable_fracture;
+    run_parallel = CFGV.is_parallel;
+
+    gradient_extforce = CFGV.gradient_extforce;
+    extforce_maxstep = CFGV.extforce_maxstep;
+    // self-contact
+    enable_torque = CFGV.enable_torque;
+  };
 
 private:
   /* data */
@@ -685,6 +706,43 @@ contact force computation
         } else {
           ft_i += PArr[i].extforce;
         }
+      }
+
+      // external torque about the centroid
+      if (TL.enable_torque) {
+	  // centroid about which the torque is applied
+	  Matrix<double, 1, dim> c = PArr[i].mean_CurrPos();
+	  unsigned taxis = PArr[i].torque_axis;
+
+	  for (unsigned nn = 0; nn < PArr[i].CurrPos.size(); nn++) {
+	      Matrix<double, 1, dim> r_vec_proj = PArr[i].CurrPos[nn] - c;
+	      // project on the plane perpendicular to torque_axis
+	      // In 2d, always set torque_axis=2 (i.e, z-axis)
+	      if (dim==3) {
+		  r_vec_proj(taxis) = 0;
+	      }
+	      // perpendicular to r vector -> r_perp
+	      Matrix<double, 1, dim> r_perp;
+	      if (dim==3) {
+		  r_perp(taxis) = 0;
+	      }
+	      r_perp( (taxis+1)%3 ) = - r_vec_proj( (taxis+2)%3 );
+	      r_perp( (taxis+2)%3 ) = r_vec_proj( (taxis+1)%3 );
+
+	      // unit perpendicular direction to r vector -> r_perp
+	      auto perp_norm = r_perp.norm();
+	      if (perp_norm > 0) {
+		  r_perp /= perp_norm;
+	      }
+	      else
+	      {
+		  r_perp( (taxis+1)%3 ) = 0;
+		  r_perp( (taxis+2)%3 ) = 0;
+	      }
+
+	      // add force density due to torque to the total force
+	      ft_i[nn] += (PArr[i].torque_val * r_perp);
+	  }
       }
 
       // store the computed value into the particle force

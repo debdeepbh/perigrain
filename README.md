@@ -128,6 +128,8 @@ for 2D.
 
 
 # Todo
+- [ ] Apply fixed torque on wheel, 2D
+	
 - [ ] Saving bulk data from all timesteps into h5 file with given options to compute different quantities
 	- [ ] Generate h5 files with options
 	- [ ] Plot from h5 files with options
