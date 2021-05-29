@@ -4,8 +4,9 @@ import numpy as np
 
 class Shape:
     """Returns the boundary nodes and the nonconvex_interceptor"""
-    def __init__(self, P, nonconvex_interceptor = None, msh_file = None):
+    def __init__(self, P, pygmsh_geom=None, nonconvex_interceptor = [], msh_file = None):
         self.P = P
+        self.pygmsh_geom = pygmsh_geom
         self.nonconvex_interceptor = nonconvex_interceptor
         self.msh_file = msh_file
 
@@ -481,9 +482,68 @@ def test():
 
     return Shape(P=[], nonconvex_interceptor=[], msh_file=filename)
 
+def pygmsh_geom_test_works(scaling=1e-3, meshsize = 0.5e-3):
+    P_bdry= scaling * np.array([
+        [0.0, 0.0],
+        [1.0, -0.2],
+        [1.1, 1.2],
+        [0.1, 0.7],
+    ])
+    msh_file = 'meshdata/geom_test.msh'
+    with pygmsh.occ.Geometry() as geom:
+        polygon1 = geom.add_polygon(
+            P_bdry,
+            mesh_size= meshsize,
+        )
+        geom.add_physical(polygon1.surface, 'surface1')
+        mesh = geom.generate_mesh()
+        print(mesh)
+        # mesh.write(msh_file)
+        pygmsh.write(msh_file)
+        print('saved')
+
+    return Shape(P=[], nonconvex_interceptor=[], msh_file=msh_file)
+
+def pygmsh_geom_test_also_works(scaling=1e-3, meshsize = 0.5e-3):
+    P_bdry= scaling * np.array([
+        [0.0, 0.0],
+        [1.0, -0.2],
+        [1.1, 1.2],
+        [0.1, 0.7],
+    ])
+    # Initialize empty geometry using the build in kernel in GMSH
+    geometry = pygmsh.geo.Geometry()
+    # Fetch model we would like to add data to
+    model = geometry.__enter__()
+    # add polygon
+    polygon1 = model.add_polygon(
+        P_bdry,
+        mesh_size= meshsize,
+    )
+    return Shape(P=[], nonconvex_interceptor=[], pygmsh_geom=geometry)
+
+def pygmsh_geom_test(scaling=1e-3, meshsize = 0.5e-3):
+    # Initialize empty geometry using the build in kernel in GMSH
+    geometry = pygmsh.geo.Geometry()
+    # Fetch model we would like to add data to
+    model = geometry.__enter__()
+
+    circle1 = model.add_circle([0,0], scaling, meshsize)
+    circle2 = model.add_circle([0,0], scaling/2, meshsize)
+
+    # model.add_physical([circle1, circle2], "surface1")
+    model.add_plane_surface([circle1, circle2], meshsize)
+
+    return Shape(P=[], nonconvex_interceptor=[], pygmsh_geom=geometry)
+
+
+def annulus():
+    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/2d/annulus.msh')
+
 #######################################################################
 #                                 3D                                  #
 #######################################################################
+
 
 def sphere_small_3d():
     return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/3d/3d_sphere_small.msh')

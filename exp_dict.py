@@ -157,9 +157,10 @@ class Particle(object):
         # print('Computing neighborhood connectivity.')
         self.NArr = []
         nci = self.shape.nonconvex_interceptor
+        # print('nci', nci)
         remove_ncvx_bonds = False
         interceptor = []
-        if (nci is not None) and (self.dim ==2):
+        if (len(nci)>0) and (self.dim ==2):
             remove_ncvx_bonds = True
             interceptor = nci.all()
             # print('(Will remove nonconvex bonds)')
@@ -380,17 +381,15 @@ class ShapeList(object):
 
         print('Shape:', end=' ', flush=True)
 
+        # Helper function
         def gen_particle(sh):
-            # Helper function
-
             print(sh, end=' ', flush=True)
                 # print(i, end = ' ', flush=True)
-
             shape = self.shape_list[sh]
             if shape.msh_file is None:
-                mesh = genmesh(P_bdry=shape.P, meshsize=self.meshsize_list[sh], dimension = dimension, do_plot = plot_mesh)
+                mesh = genmesh(P_bdry=shape.P, pygmsh_geom=shape.pygmsh_geom, meshsize=self.meshsize_list[sh], dimension = dimension, do_plot = plot_mesh)
 
-                if (plot_shape):
+                if (plot_shape and (shape.P)):
                     dim = len(mesh.pos[0])
                     print('dim = ', dim)
                     if(dim ==2):
@@ -438,8 +437,8 @@ class ShapeList(object):
                 # when the .msh is specified
                 mesh = genmesh(P_bdry=None, meshsize=None, msh_file=shape.msh_file, dimension = dimension, do_plot = plot_mesh)
 
+            print('total mesh volume: ', np.sum(mesh.vol))
 
-            # print('total mesh volume: ', np.sum(mesh.vol))
             PP = Particle(mesh=mesh, shape=self.shape_list[sh], material=self.material_list[sh], nbdarr_in_parallel=nbdarr_in_parallel)
 
             # print('Done generating particles')
@@ -2740,12 +2739,12 @@ def wheel_on_inclined():
     """
 
     # whether or not to add particles
-    add_particles = 0
     wheel_rad = 3e-3
 
     # delta = 1e-3
     # delta = 10e-3
     delta = 1e-3
+    # meshsize = delta/2
     meshsize = delta/2
     contact_radius = delta/4
 
@@ -2795,12 +2794,17 @@ def wheel_on_inclined():
 
     # wheel
     # SL.append(shape=shape_dict.small_disk(scaling=wheel_rad) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
-    SL.append(shape=shape_dict.small_disk(scaling=wheel_rad) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    # SL.append(shape=shape_dict.small_disk(scaling=wheel_rad) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    # SL.append(shape=shape_dict.pygmsh_geom_test(scaling=2e-3, meshsize=meshsize) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    SL.append(shape=shape_dict.annulus() , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    # SL.append(shape=shape_dict.wheel_ring(scaling=2e-3) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     SL.append(shape=shape_dict.plank(l=blade_l, s=blade_s) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
 
 
     # generate the mesh for each shape
-    particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=True)
+    particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=False)
+
+    print('Here')
 
     # plank, rotation
     particles[1][0].rotate(blade_angle)

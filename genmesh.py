@@ -37,7 +37,7 @@ class ReturnValue(object):
 
 
         
-def genmesh(P_bdry, meshsize, msh_file = None, do_plot = True, dimension = 2, dotsize = 10, mesh_optimize=True):
+def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, do_plot = True, dimension = 2, dotsize = 10, mesh_optimize=True):
     """Generate a mesh from given polygon
     :P_bdry: an array of boundary points
     :meshsize: 
@@ -46,15 +46,21 @@ def genmesh(P_bdry, meshsize, msh_file = None, do_plot = True, dimension = 2, do
 
     # mesh
     if msh_file is None:
-        # print('Generating mesh from poly')
-        # with pygmsh.geo.Geometry() as geom:
-        with pygmsh.occ.Geometry() as geom:
-            polygon1 = geom.add_polygon(
-                P_bdry,
-                mesh_size= meshsize,
-            )
-            geom.add_physical(polygon1.surface, 'surface1')
-            mesh = geom.generate_mesh()
+        if pygmsh_geom is None:
+            # print('Generating mesh from poly')
+            # with pygmsh.geo.Geometry() as geom:
+            with pygmsh.occ.Geometry() as geom:
+                polygon1 = geom.add_polygon(
+                    P_bdry,
+                    mesh_size= meshsize,
+                )
+                geom.add_physical(polygon1.surface, 'surface1')
+                mesh = geom.generate_mesh()
+        else:
+            print('Generating from provided pygmsh_geom object.')
+            mesh = pygmsh_geom.generate_mesh()
+            print(mesh)
+
     else:
         print('Loading mesh from file: ', msh_file)
         mesh = meshio.read(msh_file)
