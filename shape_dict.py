@@ -584,14 +584,14 @@ def pygmsh_geom_test(scaling=5e-3, meshsize = 0.5e-3):
 def annulus():
     return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/2d/annulus.msh')
 
-def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7):
+def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7, filename_suffix='00'):
     """
     :returns: TODO
 
     """
-    msh_file = 'meshdata/msh_test.msh'
+    msh_file = 'meshdata/ring_'+str(filename_suffix)+'.msh'
     gmsh.initialize()
-    print('done')
+    
     # - the first 3 arguments are the point coordinates (x, y, z)
     # - the next (optional) argument is the target mesh size close to the point
     # - the last (optional) argument is the point tag (a stricly positive integer
@@ -608,6 +608,8 @@ def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7):
     gmsh.option.setNumber("Mesh.CharacteristicLengthMax", meshsize);
 
     # gmsh.option.setNumber("Mesh.CharacteristicLengthFactor", 0.5);
+
+    gmsh.option.setNumber("General.Verbosity", 0);
 
     # obligatory before generating the mesh
     gmsh.model.occ.synchronize()

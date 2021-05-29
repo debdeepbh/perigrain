@@ -439,7 +439,7 @@ class ShapeList(object):
 
 
 
-            print('total mesh volume: ', np.sum(mesh.vol))
+            # print('total mesh volume: ', np.sum(mesh.vol))
 
             PP = Particle(mesh=mesh, shape=self.shape_list[sh], material=self.material_list[sh], nbdarr_in_parallel=nbdarr_in_parallel)
 
@@ -2799,7 +2799,7 @@ def wheel_on_inclined():
     # SL.append(shape=shape_dict.small_disk(scaling=wheel_rad) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     # SL.append(shape=shape_dict.pygmsh_geom_test(scaling=wheel_rad, meshsize=meshsize) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     # SL.append(shape=shape_dict.gmsh_test(scaling=wheel_rad, meshsize=meshsize/2) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
-    SL.append(shape=shape_dict.wheel_annulus(scaling=wheel_rad, inner_circle_ratio=0.7, meshsize=meshsize) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    SL.append(shape=shape_dict.wheel_annulus(scaling=wheel_rad, inner_circle_ratio=0.7, meshsize=meshsize, filename_suffix='00') , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     # SL.append(shape=shape_dict.annulus() , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     # SL.append(shape=shape_dict.wheel_ring(scaling=2e-3) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     SL.append(shape=shape_dict.plank(l=blade_l, s=blade_s) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))

@@ -164,8 +164,8 @@ def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, do_plot = True,
         # print(area == 0)
 
     nodelist_zero_vol = np.where(area == 0)[0]
-    print('nodes with zero volume: ', np.where(area == 0)[0])
     if len(nodelist_zero_vol) > 0:
+        print('nodes with zero volume: ', np.where(area == 0)[0])
         print('Caution: there are nodes with zero volume: ', np.where(area == 0)[0])
         print('All nodes excepts the ones participating in generating elements', set(range(1, len(Pos))).difference(set(T.flatten())))
         # raise ValueError('Caution: there are nodes with zero volume: ', np.where(area == 0)[0])
