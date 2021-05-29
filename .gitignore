@@ -58,8 +58,6 @@ output/img/*
 !output/img/.gitkeep
 output/vid/*
 !output/vid/.gitkeep
-meshdata/2d/*
-!meshdata/2d/.gitkeep
 
 
 #scripts
