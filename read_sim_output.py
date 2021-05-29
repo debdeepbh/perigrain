@@ -194,6 +194,7 @@ def extract_bulk(t, loc, fields, exp_b, plti):
 
         elif field=='wall_force':
             out_row.append(np.array(w['reaction']))
+
         elif field=='particle_force':
             particle_force = []
             for name in f:
@@ -202,6 +203,22 @@ def extract_bulk(t, loc, fields, exp_b, plti):
                     sum_force = np.sum(np.array(f[name+'/force']), axis =0)
                     particle_force.append(sum_force)
             out_row.append(particle_force)
+        elif field=='particle_mean_vel':
+            particle_vel = []
+            for name in f:
+                if re.match(r'P_[0-9]+', name):
+                    pid = int(name[2:])
+                    sum_vel = np.mean(np.array(f[name+'/vel']), axis =0)
+                    particle_vel.append(sum_vel)
+            out_row.append(particle_vel)
+        elif field=='particle_mean_CurrPos':
+            particle_CurrPos = []
+            for name in f:
+                if re.match(r'P_[0-9]+', name):
+                    pid = int(name[2:])
+                    sum_CurrPos = np.mean(np.array(f[name+'/CurrPos']), axis =0)
+                    particle_CurrPos.append(sum_CurrPos)
+            out_row.append(particle_CurrPos)
 
         elif field=='particle_damage':
             particle_damage = []

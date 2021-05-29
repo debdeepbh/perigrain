@@ -11,13 +11,15 @@ from read_sim_output import extract_bulk
 
 # fields to save
 fields = [
-        # 'time',
+        'time',
         # 'wall_loc',
         # 'wall_force',
-        'volume_fraction',
-        'bulk_damage',
+        # 'volume_fraction',
+        # 'bulk_damage',
         # 'particle_damage',
         # 'particle_force',
+        'particle_mean_vel',
+        # 'particle_mean_CurrPos',
         ] 
 
 # saving to file
@@ -54,7 +56,7 @@ print('Time taken: ', time.time() - start)
 with h5py.File(combined_file, 'w') as f:
     for i, field in enumerate(fields):
         col = [v[i] for v in V]
-        print(col)
+        print(field, col)
         # f.create_dataset(field, data=np.array(col))
         f.create_dataset(field, data=col)
 

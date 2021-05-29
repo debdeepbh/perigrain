@@ -160,7 +160,7 @@ class Particle(object):
         # print('nci', nci)
         remove_ncvx_bonds = False
         interceptor = []
-        if (len(nci)>0) and (self.dim ==2):
+        if (nci and self.dim ==2):
             remove_ncvx_bonds = True
             interceptor = nci.all()
             # print('(Will remove nonconvex bonds)')
@@ -389,7 +389,8 @@ class ShapeList(object):
             if shape.msh_file is None:
                 mesh = genmesh(P_bdry=shape.P, pygmsh_geom=shape.pygmsh_geom, meshsize=self.meshsize_list[sh], dimension = dimension, do_plot = plot_mesh)
 
-                if (plot_shape and (shape.P)):
+                # print(shape.P)
+                if (plot_shape and (shape.P is not None)):
                     dim = len(mesh.pos[0])
                     print('dim = ', dim)
                     if(dim ==2):
@@ -2044,7 +2045,9 @@ def collision_pacman():
     # SL.append(shape=shape_dict.small_disk(), count=2, meshsize=meshsize, material=material_dict.peridem(delta))
     # SL.append(shape=shape_dict.pacman(angle = pacman_angle), count=2, meshsize=meshsize, material=material_dict.peridem(delta))
     # SL.append(shape=shape_dict.plus(), count=2, meshsize=meshsize, material=material_dict.peridem_softer_1(delta))
-    SL.append(shape=shape_dict.pacman(angle = pacman_angle), count=2, meshsize=meshsize, material=material_dict.peridem_softer_1(delta))
+    # SL.append(shape=shape_dict.pacman(angle = pacman_angle), count=2, meshsize=meshsize, material=material_dict.peridem_softer_1(delta))
+    # SL.append(shape=shape_dict.reverse_disk(), count=2, meshsize=meshsize, material=material_dict.peridem_softer_1(delta))
+    SL.append(shape=shape_dict.wheel_annulus(scaling=1e-3, inner_circle_ratio=0.5,  meshsize=meshsize/2, nci_steps=20), count=2, meshsize=meshsize, material=material_dict.peridem_softer_1(delta))
     # SL.append(shape=shape_dict.box(), count=2, meshsize=meshsize, material=material_dict.peridem_softer_1(delta))
     # SL.append(shape=shape_dict.box_notch(), count=2, meshsize=meshsize, material=material_dict.peridem_softer_1(delta))
     # SL.append(shape=shape_dict.box_notch_2(), count=2, meshsize=meshsize, material=material_dict.peridem_softer_1(delta))

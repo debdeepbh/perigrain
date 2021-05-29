@@ -128,21 +128,16 @@ for 2D.
 
 
 # Todo
-- [x] Apply fixed torque on wheel, 2D
+
 - [ ] generate mesh programmically with gmsh api in python
-	- [ ] nonconvex interceptors for the `.msh`-imported files
+	- [x] nonconvex interceptors for the `.msh`-imported files
+	- [ ] Why are some bonds in `wheel_annulus` automatically removed (without nci)?
 	- [ ] fix fltk crash in ubuntu
+
 	
-- [ ] Saving bulk data from all timesteps into h5 file with given options to compute different quantities
-	- [ ] Generate h5 files with options
-	- [ ] Plot from h5 files with options
-- [ ] Coffee 
-	- [ ] [running] changed `rho_scale` to `0.7` from `0.6`
 - [ ] Compression without gravity? (pre-computation of gravity takes too long)
 * [ ] Compute the total kinetic energy for plotting. Does fracture (without damping and friction) dissipate the kinetic energy?
-* [ ] [rewrite - speed boost attempt] For each particle `i` for each node `j` in particle-`i`, compute all forces on node `j` at once by looping over nodes of all particles, all walls and all self-contact nodes. This way, we can avoid going through the `ij` loops 3 times. Moreover, we can attempt to update the symmetric node as well. Is all this possible while using a parallelization?
 * [ ] [Better to edit (a copy of) timeloop.cpp] How to simulate: particle first settles, then things are dropped on them
-	- an override of total particles!
 * [ ] To get a convex curve like the others test on `2d_bulk_small`
 	- [?] Equal grain size (maybe the disparity in cnot computation for scaled grains is causing extra/less force)
 	- [x] [didn't make any difference] Bigger grain size
@@ -155,10 +150,6 @@ for 2D.
 	- [ ] Compute ratio of sigma_1 and sigma_3 vs the difference 
 	- [x] [Important. Seen evidence where increasing scaling without increasing delta leads to excessive jump upon impact.] While scaling particles, if delta remains constant, the neighbors need to be recomputed. On the other hands, if the neighbors are kept the same, delta needs to be modified and hence cnot and snot changes too.
 
-* [ ] Export total runtime to file
-* [ ] Create a plot class with `append` to plot more files and `superimpose` to plot within the same picture
-* [x] combine functions like saving to file, printing etc in `timeloop.cpp` to reduce code repetition 
-* [ ] Why is `run_timeloop_compact()` slower than `run_timeloop()`??
 
 Rigo code: try a rectangle breaking due to its own weight, melting and cracking at the same time.
 lsdemperi code: add the initial displacement, velocity, and acceleration as zero.
@@ -166,14 +157,11 @@ Pressure test: `2d_pressure`
     - [ ] Note down the total timesteps for the whole simulation
     - [ ] Copy latest wall file to help resume in `2d_pressure`
     - [ ] Possibly run with much more particles, what should be the wall stopping point (needs a lot of resuming, develop the setup to resume easily)
-* [x] Find out why Ha-Bobaru $c_0$ constant does not work in `material_dict`
-It works under the following conditions:
-	* same rho, nu, E as the peridem material parameter with (delta=1e-3)
-	* sodalime parameters with delta=2e-3
 	
+# Someday
+
 - [ ] Don't save particle force anymore, (since it can be derived from acc)
 - [ ] Remove nonconvex bonds from 3D shapes
-- [ ] Saving NbdArr or connectivity
 - [ ] Multiple wall contact
 - [ ] State based
 - [ ] Speed up plot generation with R(?) or VTK or VisPy (GPU plotting) or mayavi
@@ -183,6 +171,20 @@ It works under the following conditions:
   - [ ] How to change meshsize of particle arrangement mesh without editing the .geo file?
   - [ ] Optimization for nodal sphere radii
 
+# Done
+
+* [x] Export total runtime to file
+* [x] Create a plot class with `append` to plot more files and `superimpose` to plot within the same picture
+* [?] Why is `run_timeloop_compact()` slower than `run_timeloop()`??
+* [x] [rewrite - speed boost attempt] For each particle `i` for each node `j` in particle-`i`, compute all forces on node `j` at once by looping over nodes of all particles, all walls and all self-contact nodes. This way, we can avoid going through the `ij` loops 3 times. Moreover, we can attempt to update the symmetric node as well. Is all this possible while using a parallelization?
+* [x] [code abstrction made it slower, so reverted to original implementation] combine functions like saving to file, printing etc in `timeloop.cpp` to reduce code repetition 
+* [x] Find out why Ha-Bobaru $c_0$ constant does not work in `material_dict`
+It works under the following conditions:
+	* same rho, nu, E as the peridem material parameter with (delta=1e-3)
+	* sodalime parameters with delta=2e-3
+- [x] Saving bulk data from all timesteps into h5 file with given options to compute different quantities
+	- [x] Generate h5 files with options
+	- [x] Plot from h5 files with options
 - [x] Save connectivity data for resuming
 	- [x] convert NbdArr to connectivity in C++
 	- [x] Save connectivity to file
@@ -219,6 +221,7 @@ Observation: as soon as the gravity is reduced, the particles bounce back up due
 	- [ ] Merge the branch of `graph-cpp` named `par` to `main`
 	- [x] Create directories `mperidem/data/hdf5` and `mperidem/data/csv`
 
+- [x] Apply fixed torque on wheel, 2D
 - [x] Compute the total contact force on wall boundaries, averaged(?)
 - [x] Move `timesteps`, `dt`, and `modulo` to a plaintext file and read
 - [x] 3D wall interaction implementation

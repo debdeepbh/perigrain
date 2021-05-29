@@ -7,7 +7,7 @@ import sys
 
 class Shape:
     """Returns the boundary nodes and the nonconvex_interceptor"""
-    def __init__(self, P, pygmsh_geom=None, nonconvex_interceptor = [], msh_file = None):
+    def __init__(self, P, nonconvex_interceptor=None, msh_file = None, pygmsh_geom=None):
         self.P = P
         self.pygmsh_geom = pygmsh_geom
         self.nonconvex_interceptor = nonconvex_interceptor
@@ -294,6 +294,14 @@ def small_disk(scaling = 1e-3, steps = 20):
     P = scaling * P.transpose()
     return Shape(P)
 
+def reverse_disk(scaling = 1e-3, steps = 20):
+    angles = np.linspace( 2* np.pi, 0, num = steps, endpoint = False)
+    P = np.array([np.cos(angles), np.sin(angles)])
+    # return column matrices
+    P = scaling * P.transpose()
+    nonconvex_interceptor = gen_nonconvex_interceptors(P)
+    nonconvex_interceptor.use = 'bisec'
+    return Shape(P, nonconvex_interceptor)
 
 def perturbed_disk(steps = 20, seed=5, scaling=1e-3, std=0.2, angle_drift_amp = 0, angle_drift_std_ratio = 0.25):
 
@@ -447,11 +455,11 @@ def plus_inscribed(notch_dist = 0.25, scaling = 1e-3):
     return Shape(P, nonconvex_interceptor)
 
 def small_disk_fromfile():
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/peridem_mat.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/peridem_mat.msh')
 
 def box_wo_circ():
     msh_file='meshdata/2d/box_wo_circ.msh'
-    return Shape(P=[], nonconvex_interceptor=[], msh_file=msh_file)
+    return Shape(P=None, nonconvex_interceptor=None, msh_file=msh_file)
 
 def test():
     filename = "meshdata/2d/test.msh"
@@ -483,7 +491,7 @@ def test():
         mesh = geom.generate_mesh()
         meshio.write(filename, mesh, file_format="gmsh")
 
-    return Shape(P=[], nonconvex_interceptor=[], msh_file=filename)
+    return Shape(P=None, nonconvex_interceptor=None, msh_file=filename)
 
 def pygmsh_geom_test_works(scaling=1e-3, meshsize = 0.5e-3):
     P_bdry= scaling * np.array([
@@ -505,7 +513,7 @@ def pygmsh_geom_test_works(scaling=1e-3, meshsize = 0.5e-3):
         pygmsh.write(msh_file)
         print('saved')
 
-    return Shape(P=[], nonconvex_interceptor=[], msh_file=msh_file)
+    return Shape(P=None, nonconvex_interceptor=None, msh_file=msh_file)
 
 def pygmsh_geom_test_also_works(scaling=1e-3, meshsize = 0.5e-3):
     P_bdry= scaling * np.array([
@@ -523,7 +531,7 @@ def pygmsh_geom_test_also_works(scaling=1e-3, meshsize = 0.5e-3):
         P_bdry,
         mesh_size= meshsize,
     )
-    return Shape(P=[], nonconvex_interceptor=[], pygmsh_geom=geometry)
+    return Shape(P=None, nonconvex_interceptor=None, pygmsh_geom=geometry)
 
 def pygmsh_geom_test_spline(scaling=5e-3, meshsize = 0.5e-3):
     # Initialize empty geometry using the build in kernel in GMSH
@@ -561,7 +569,7 @@ def pygmsh_geom_test_spline(scaling=5e-3, meshsize = 0.5e-3):
     ll = model.add_curve_loop([s1, s2])
     pl = model.add_plane_surface(ll)
 
-    return Shape(P=[], nonconvex_interceptor=[], pygmsh_geom=geometry)
+    return Shape(P=None, nonconvex_interceptor=None, pygmsh_geom=geometry)
 
 def pygmsh_geom_test(scaling=5e-3, meshsize = 0.5e-3):
     msh_file = 'meshdata/geom_test.msh'
@@ -578,19 +586,21 @@ def pygmsh_geom_test(scaling=5e-3, meshsize = 0.5e-3):
         pygmsh.write(msh_file)
         print('saved')
     
-    return Shape(P=[], nonconvex_interceptor=[], msh_file=msh_file)
+    return Shape(P=None, nonconvex_interceptor=None, msh_file=msh_file)
 
 
 def annulus():
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/2d/annulus.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/2d/annulus.msh')
 
-def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7, filename_suffix='00'):
+def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7, filename_suffix='00', nci_steps=10):
     """
     :returns: TODO
 
     """
     msh_file = 'meshdata/ring_'+str(filename_suffix)+'.msh'
     gmsh.initialize()
+
+    inner_rad = scaling*inner_circle_ratio
     
     # - the first 3 arguments are the point coordinates (x, y, z)
     # - the next (optional) argument is the target mesh size close to the point
@@ -598,7 +608,7 @@ def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7, filename_
     #   that uniquely identifies the point)
     # gmsh.model.occ.addPoint(0, 0, 0, meshsize, 1)
     gmsh.model.occ.addCircle(0, 0, 0, scaling, 1)
-    gmsh.model.occ.addCircle(0, 0, 0, scaling*inner_circle_ratio, 2)
+    gmsh.model.occ.addCircle(0, 0, 0, inner_rad, 2)
     gmsh.model.occ.addCurveLoop([1], 1)
     gmsh.model.occ.addCurveLoop([2], 2)
     gmsh.model.occ.addPlaneSurface([1, 2], 1)
@@ -622,7 +632,17 @@ def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7, filename_
     # if '-nopopup' not in sys.argv:
     # gmsh.fltk.run()
 
-    return Shape(P=[], nonconvex_interceptor=[], msh_file=msh_file)
+    # nonconvex_interceptor
+    nci_steps = 10
+    angles = np.linspace( 2* np.pi, 0, num = nci_steps, endpoint = False)
+    P = np.array([np.cos(angles), np.sin(angles)])
+    # return column matrices
+    P = inner_rad * P.transpose()
+    nonconvex_interceptor = gen_nonconvex_interceptors(P)
+    nonconvex_interceptor.use = 'all'
+
+    return Shape(P=None, nonconvex_interceptor=nonconvex_interceptor, msh_file=msh_file)
+    # return Shape(P=None, nonconvex_interceptor=None, msh_file=msh_file)
 
 def gmsh_test(scaling=1e-3, meshsize=1e-3):
     """
@@ -658,33 +678,33 @@ def gmsh_test(scaling=1e-3, meshsize=1e-3):
     # if '-nopopup' not in sys.argv:
     # gmsh.fltk.run()
 
-    return Shape(P=[], nonconvex_interceptor=[], msh_file=msh_file)
+    return Shape(P=None, nonconvex_interceptor=None, msh_file=msh_file)
 #######################################################################
 #                                 3D                                  #
 #######################################################################
 
 
 def sphere_small_3d():
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/3d/3d_sphere_small.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/3d/3d_sphere_small.msh')
 
 
 def sphere_small_3d_bad():
     print("Caution: bad msh because the .geo has a point in the center")
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/3d/3d_sphere_small_bad.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/3d/3d_sphere_small_bad.msh')
 
 def sphere_small_3d_mat():
     # Copied from mperidem
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/3d/3d_sphere_small_mat.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/3d/3d_sphere_small_mat.msh')
 def sphere_small_3d_mat_bad():
     # Copied from mperidem
     print("Caution: bad msh file. This one should cause the simulation to fail after contact.")
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/3d/3d_sphere_small_mat_bad.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/3d/3d_sphere_small_mat_bad.msh')
 
 def disk_w_hole_3d():
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/3d/disk_w_hole_small.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/3d/disk_w_hole_small.msh')
 
 def sphere_unit_3d():
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/3d/3d_sphere_unit.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/3d/3d_sphere_unit.msh')
 
 def plus_small_3d():
-    return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/3d/3d_plus_small.msh')
+    return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/3d/3d_plus_small.msh')

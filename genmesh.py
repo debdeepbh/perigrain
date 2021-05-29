@@ -57,6 +57,7 @@ def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, do_plot = True,
                 geom.add_physical(polygon1.surface, 'surface1')
                 mesh = geom.generate_mesh()
         else:
+            # print(pygmsh_geom)
             print('Generating from provided pygmsh_geom object.')
             mesh = pygmsh_geom.generate_mesh()
             print(mesh)
