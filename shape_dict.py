@@ -615,6 +615,8 @@ def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7):
     gmsh.model.mesh.generate(2)
     # save to file
     gmsh.write(msh_file)
+    # close gmsh, as opposed to initialize()
+    gmsh.finalize()
     # if '-nopopup' not in sys.argv:
     # gmsh.fltk.run()
 
