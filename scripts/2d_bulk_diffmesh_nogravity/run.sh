@@ -215,10 +215,10 @@ stds=(
 #0.1frac
 #0.2frac
 #0.3frac
-#0.4frac
-#plusfrac
-#n4frac
-ring
+0.4frac
+plusfrac
+n4frac
+ringfrac
 )
 
 walldata ''
