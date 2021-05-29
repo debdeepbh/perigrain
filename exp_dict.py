@@ -437,6 +437,8 @@ class ShapeList(object):
                 # when the .msh is specified
                 mesh = genmesh(P_bdry=None, meshsize=None, msh_file=shape.msh_file, dimension = dimension, do_plot = plot_mesh)
 
+
+
             print('total mesh volume: ', np.sum(mesh.vol))
 
             PP = Particle(mesh=mesh, shape=self.shape_list[sh], material=self.material_list[sh], nbdarr_in_parallel=nbdarr_in_parallel)
@@ -2745,13 +2747,13 @@ def wheel_on_inclined():
     # delta = 10e-3
     delta = 1e-3
     # meshsize = delta/2
-    meshsize = delta/2
+    meshsize = delta/3
     contact_radius = delta/4
 
     # blade_l = 5e-3
     # blade_s = 0.5e-3
-    blade_l = 10e-3
-    blade_s = 1e-3
+    blade_l = 20e-3
+    blade_s = 0.5e-3
     blade_angle = -np.pi/10
 
     # particle toughness
@@ -2796,14 +2798,15 @@ def wheel_on_inclined():
     # SL.append(shape=shape_dict.small_disk(scaling=wheel_rad) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     # SL.append(shape=shape_dict.small_disk(scaling=wheel_rad) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     # SL.append(shape=shape_dict.pygmsh_geom_test(scaling=wheel_rad, meshsize=meshsize) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
-    SL.append(shape=shape_dict.gmsh_test(scaling=wheel_rad, meshsize=meshsize/2) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    # SL.append(shape=shape_dict.gmsh_test(scaling=wheel_rad, meshsize=meshsize/2) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+    SL.append(shape=shape_dict.wheel_annulus(scaling=wheel_rad, inner_circle_ratio=0.7, meshsize=meshsize) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     # SL.append(shape=shape_dict.annulus() , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     # SL.append(shape=shape_dict.wheel_ring(scaling=2e-3) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     SL.append(shape=shape_dict.plank(l=blade_l, s=blade_s) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
 
 
     # generate the mesh for each shape
-    particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=True, plot_shape=False, shapes_in_parallel=False)
+    particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=False)
 
     print('Here')
 
@@ -2829,7 +2832,7 @@ def wheel_on_inclined():
     wheel.breakable = 0
     wheel.stoppable = 1
     #torque
-    wheel.torque_val = -1e6
+    wheel.torque_val = -5e5
     #gravity
     g_val = -1e3
     wheel.extforce += [0, g_val * wheel.material.rho]
@@ -2837,16 +2840,16 @@ def wheel_on_inclined():
     # initial angular velcity
     # 1000 RPM (pretty high for burr coffee grinder) = 1000 * 2 * pi / 60 (rad/s) ~ 104 rad/s
     # v_val = 1000
-    # v_val = -600
-    # perp = np.array([[0, -1], [1, 0]])
-    # centroid = np.mean(wheel.pos + wheel.disp, axis=0)
-    # print('centroid', centroid)
-    # for j in range(len(wheel.pos)):
-        # r_vec = (wheel.pos[j] - centroid)
-        # r = np.sqrt( np.sum(r_vec**2) )
-        # u_dir = r_vec / r
-        # t_dir = perp @ u_dir
-        # wheel.vel[j] += v_val * r * t_dir
+    v_val = -600
+    perp = np.array([[0, -1], [1, 0]])
+    centroid = np.mean(wheel.pos + wheel.disp, axis=0)
+    print('centroid', centroid)
+    for j in range(len(wheel.pos)):
+        r_vec = (wheel.pos[j] - centroid)
+        r = np.sqrt( np.sum(r_vec**2) )
+        u_dir = r_vec / r
+        t_dir = perp @ u_dir
+        wheel.vel[j] += v_val * r * t_dir
 
 
     # contact properties

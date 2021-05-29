@@ -584,8 +584,43 @@ def pygmsh_geom_test(scaling=5e-3, meshsize = 0.5e-3):
 def annulus():
     return Shape(P=[], nonconvex_interceptor=[], msh_file='meshdata/2d/annulus.msh')
 
+def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7):
+    """
+    :returns: TODO
 
-def gmsh_test(scaling=1e-3, meshsize=1e-3/3):
+    """
+    msh_file = 'meshdata/msh_test.msh'
+    gmsh.initialize()
+    print('done')
+    # - the first 3 arguments are the point coordinates (x, y, z)
+    # - the next (optional) argument is the target mesh size close to the point
+    # - the last (optional) argument is the point tag (a stricly positive integer
+    #   that uniquely identifies the point)
+    # gmsh.model.occ.addPoint(0, 0, 0, meshsize, 1)
+    gmsh.model.occ.addCircle(0, 0, 0, scaling, 1)
+    gmsh.model.occ.addCircle(0, 0, 0, scaling*inner_circle_ratio, 2)
+    gmsh.model.occ.addCurveLoop([1], 1)
+    gmsh.model.occ.addCurveLoop([2], 2)
+    gmsh.model.occ.addPlaneSurface([1, 2], 1)
+
+    # gmsh.option.setNumber("Mesh.Algorithm", 6);
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMin", meshsize);
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMax", meshsize);
+
+    # gmsh.option.setNumber("Mesh.CharacteristicLengthFactor", 0.5);
+
+    # obligatory before generating the mesh
+    gmsh.model.occ.synchronize()
+    # We can then generate a 2D mesh...
+    gmsh.model.mesh.generate(2)
+    # save to file
+    gmsh.write(msh_file)
+    # if '-nopopup' not in sys.argv:
+    # gmsh.fltk.run()
+
+    return Shape(P=[], nonconvex_interceptor=[], msh_file=msh_file)
+
+def gmsh_test(scaling=1e-3, meshsize=1e-3):
     """
     :returns: TODO
 
@@ -605,10 +640,10 @@ def gmsh_test(scaling=1e-3, meshsize=1e-3/3):
     gmsh.model.occ.addPlaneSurface([1, 2], 1)
 
     # gmsh.option.setNumber("Mesh.Algorithm", 6);
-    # gmsh.option.setNumber("Mesh.CharacteristicLengthMin", meshsize);
-    # gmsh.option.setNumber("Mesh.CharacteristicLengthMax", meshsize);
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMin", meshsize);
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMax", meshsize);
 
-    gmsh.option.setNumber("Mesh.CharacteristicLengthFactor", 0.5);
+    # gmsh.option.setNumber("Mesh.CharacteristicLengthFactor", 0.5);
 
     # obligatory before generating the mesh
     gmsh.model.occ.synchronize()
@@ -617,7 +652,7 @@ def gmsh_test(scaling=1e-3, meshsize=1e-3/3):
     # save to file
     gmsh.write(msh_file)
     # if '-nopopup' not in sys.argv:
-    gmsh.fltk.run()
+    # gmsh.fltk.run()
 
     return Shape(P=[], nonconvex_interceptor=[], msh_file=msh_file)
 #######################################################################

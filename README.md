@@ -128,7 +128,10 @@ for 2D.
 
 
 # Todo
-- [ ] Apply fixed torque on wheel, 2D
+- [x] Apply fixed torque on wheel, 2D
+- [ ] generate mesh programmically with gmsh api in python
+	- [ ] nonconvex interceptors for the `.msh`-imported files
+	- [ ] fix fltk crash in ubuntu
 	
 - [ ] Saving bulk data from all timesteps into h5 file with given options to compute different quantities
 	- [ ] Generate h5 files with options
