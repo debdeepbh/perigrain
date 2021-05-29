@@ -108,7 +108,7 @@ The more the coefficient of friction, the larger the oscillation
 * peridynamic force in not computed when `movable=0` or `stoppable=0`
 * If you want the particle to move only via external force, set `0,1,0`
 
-# Notes regarding mesh generated via `.geo` files
+# [fixed it now by deleting points with zero volume] Notes regarding mesh generated via `.geo` files
 **Note:** In `.geo` files, do **NOT** include points that are _not_ used in generating mesh. 
 Listing unused point `Point(p)` in the `.geo` file creates a `.msh` file that has `p` in it but `p` is not used as any element vertex. Therefore, `genmesh()` produces a node with _zero_ volume, that crashes the simulation by producing `-nan` values.
 

@@ -522,17 +522,41 @@ def pygmsh_geom_test_also_works(scaling=1e-3, meshsize = 0.5e-3):
     )
     return Shape(P=[], nonconvex_interceptor=[], pygmsh_geom=geometry)
 
-def pygmsh_geom_test(scaling=1e-3, meshsize = 0.5e-3):
+def pygmsh_geom_test(scaling=5e-3, meshsize = 0.5e-3):
     # Initialize empty geometry using the build in kernel in GMSH
     geometry = pygmsh.geo.Geometry()
     # Fetch model we would like to add data to
     model = geometry.__enter__()
 
-    circle1 = model.add_circle([0,0], scaling, meshsize)
-    circle2 = model.add_circle([0,0], scaling/2, meshsize)
+    # circle1 = model.add_circle([0,0], radius=scaling, mesh_size=meshsize)
+    # circle2 = model.add_circle([0,0], radius=scaling/2, mesh_size=meshsize)
 
+    # loop1 = model.add_curve_loop(circle1.curve_loop)
+    # loop2 = model.add_curve_loop([circle2])
+    # loop1 = model.add_curve_loop(circle1)
+    # loop2 = model.add_curve_loop(circle2)
+
+    # plane_surface = model.add_plane_surface(circle1.curve_loop, holes=[circle2.curve_loop])
+
+    print('geom deon')
     # model.add_physical([circle1, circle2], "surface1")
-    model.add_plane_surface([circle1, circle2], meshsize)
+    # model.add_plane_surface([circle1.curve_loop, circle2.curve_loop], meshsize)
+    # model.add_plane_surface(circle1.curve_loop)
+
+
+    lcar = meshsize
+    p1 = model.add_point([0.0*scaling, 0.0*scaling], lcar)
+    p2 = model.add_point([1.0*scaling, 0.0*scaling], lcar)
+    p3 = model.add_point([1.0*scaling, 0.5*scaling], lcar)
+    p4 = model.add_point([1.0*scaling, 1.0*scaling], lcar)
+    s1 = model.add_bspline([p1, p2, p3, p4])
+
+    p2 = model.add_point([0.0*scaling, 1.0*scaling], lcar)
+    p3 = model.add_point([0.5*scaling, 1.0*scaling], lcar)
+    s2 = model.add_spline([p4, p3, p2, p1])
+
+    ll = model.add_curve_loop([s1, s2])
+    pl = model.add_plane_surface(ll)
 
     return Shape(P=[], nonconvex_interceptor=[], pygmsh_geom=geometry)
 

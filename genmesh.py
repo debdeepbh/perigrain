@@ -163,11 +163,23 @@ def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, do_plot = True,
         # print('nodal volume ', area)
         # print(area == 0)
 
-        nodelist_zero_vol = np.where(area == 0)[0]
-        # print('nodes with zero volume: ', np.where(area == 0)[0])
-        if len(nodelist_zero_vol) > 0:
-            print('Caution: there are nodes with zero volume: ', np.where(area == 0)[0])
-            raise ValueError('Caution: there are nodes with zero volume: ', np.where(area == 0)[0])
+    nodelist_zero_vol = np.where(area == 0)[0]
+    print('nodes with zero volume: ', np.where(area == 0)[0])
+    if len(nodelist_zero_vol) > 0:
+        print('Caution: there are nodes with zero volume: ', np.where(area == 0)[0])
+        print('All nodes excepts the ones participating in generating elements', set(range(1, len(Pos))).difference(set(T.flatten())))
+        # raise ValueError('Caution: there are nodes with zero volume: ', np.where(area == 0)[0])
+
+        ## delete the nodes
+        # Pos[nodelist_zero_vol] = []
+        # area[nodelist_zero_vol] = []
+        print(len(Pos))
+        print(len(area))
+        Pos = np.delete(Pos, nodelist_zero_vol, axis=0)
+        area = np.delete(area, nodelist_zero_vol, axis=0)
+        print(len(Pos))
+        print(len(area))
+
 
 
     # Boundary info
@@ -187,6 +199,10 @@ def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, do_plot = True,
         temp = bdry_edges.flatten()
         bdry_nodes = list(set(temp))
 
+    # print('All nodes excepts the ones participating in generating edges', set(range(1, len(Pos))).difference(set(np.array(bdry_nodes).flatten())))
+    # print('all nodes', range(len(Pos)))
+    # print('bdry_nodes', bdry_nodes)
+    # print('bdry_edges', bdry_edges)
 
     if do_plot:
         # print(Pos)
