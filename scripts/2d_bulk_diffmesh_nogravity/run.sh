@@ -14,8 +14,8 @@ stds=(
 ring
 )
 
-resume="no"
-#resume="yes"
+#resume="no"
+resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -197,11 +197,14 @@ function walldata {
 	echo "last index = $last"
 	echo "input data location = $data_loc"
 
-	echo "Running: python3 $path/genwallreaction.py 1 $last $data_loc"
-	python3 $path/genwallreaction.py 1 $last $data_loc
+	#echo "Running: python3 $path/genwallreaction.py 1 $last $data_loc"
+	#python3 $path/genwallreaction.py 1 $last $data_loc
+
+	#echo "Running: python3 $path/gendamagedata.py 1 $last $data_loc"
+	#python3 $path/gendamagedata.py 1 $last $data_loc
 
 	echo "Running: python3 $path/gendamagedata.py 1 $last $data_loc"
-	python3 $path/gendamagedata.py 1 $last $data_loc
+	python3 $path/gentimestepdata.py 1 $last $data_loc
     done
 }
 
