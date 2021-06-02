@@ -83,9 +83,9 @@ public:
   };
 
 void apply_config(ConfigVal CFGV) {
-    allow_damping  = allow_damping;
-    allow_friction = allow_friction;
-    nl_bdry_only   = nl_bdry_only;
+    allow_damping  = CFGV.allow_damping;
+    allow_friction = CFGV.allow_friction;
+    nl_bdry_only   = CFGV.nl_bdry_only;
 
     // Override if specified in config file
     if (CFGV.damping_ratio != (-1)) {

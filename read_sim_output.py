@@ -211,6 +211,14 @@ def extract_bulk(t, loc, fields, exp_b, plti):
                     sum_vel = np.mean(np.array(f[name+'/vel']), axis =0)
                     particle_vel.append(sum_vel)
             out_row.append(particle_vel)
+        elif field=='particle_mean_acc':
+            particle_acc = []
+            for name in f:
+                if re.match(r'P_[0-9]+', name):
+                    pid = int(name[2:])
+                    sum_acc = np.mean(np.array(f[name+'/acc']), axis =0)
+                    particle_acc.append(sum_acc)
+            out_row.append(particle_acc)
         elif field=='particle_mean_CurrPos':
             particle_CurrPos = []
             for name in f:
