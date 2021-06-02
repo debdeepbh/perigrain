@@ -63,7 +63,7 @@ class Experiment_brief(object):
 
 
     def total_volume(self):
-        """compute the total volume of all the particles
+        """compute the total volume of the bulk
         :returns: scalar
         """
         mPArr = self.PArr
@@ -72,6 +72,27 @@ class Experiment_brief(object):
             this_vol =  np.sum(mPArr[i].vol)
             vol += this_vol
 
+        return vol
+
+    def particle_volume(self):
+        """compute the volume of each particle
+        :returns: vector
+        """
+        mPArr = self.PArr
+        vol = np.array((len(mPArr),1))
+        for i in range(len(mPArr)):
+            vol[i] =  np.sum(mPArr[i].vol)
+        return vol
+
+    def nodal_volume(self):
+        """append all the nodal volumes of all the particles
+        :returns: vector
+        """
+        mPArr = self.PArr
+        # vol = np.array((len(mPArr),1))
+        vol = []
+        for i in range(len(mPArr)):
+            vol.append(mPArr[i].vol)
         return vol
 
     def total_mass(self):

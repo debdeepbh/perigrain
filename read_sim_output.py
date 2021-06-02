@@ -177,6 +177,9 @@ def extract_bulk(t, loc, fields, exp_b, plti):
                 w_2 = wi[3] - wi[2]
                 w_3 = wi[5] - wi[4]
                 out_row.append([w_1, w_2, w_3])
+        elif field=='particle_volume':
+            vol = exp_b.particle_volume()
+
         elif field=='volume_fraction':
             vol = exp_b.total_volume()
             wi = np.array(w['wall_info'])[:,0]

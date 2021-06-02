@@ -19,6 +19,7 @@ fields = [
         # 'particle_damage',
         # 'particle_force',
         'particle_mean_vel',
+        # 'particle_mean_acc',
         # 'particle_mean_CurrPos',
         ] 
 
