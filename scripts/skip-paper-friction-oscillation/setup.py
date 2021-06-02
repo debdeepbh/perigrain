@@ -16,12 +16,12 @@ from random import random
     """
 
 delta = 1e-3
-meshsize = 1e-3/8
-contact_radius = 1e-3/3
+meshsize = 1e-3/4
+contact_radius = 1e-3/4
 
 SL = ShapeList()
 
-SL.append(shape=shape_dict.small_disk(steps=64), count=1,
+SL.append(shape=shape_dict.small_disk(steps=32), count=1,
           meshsize=meshsize, material=material_dict.peridem(delta))
 # SL.append(shape=shape_dict.pacman(), count=2, meshsize=meshsize, material=material_dict.peridem(delta))
 
@@ -32,25 +32,30 @@ particles = SL.generate_mesh(
 particles[0][0].rotate(np.pi/2)
 # particles[0][0].shift([0, 3e-3])
 
+g_val = -1e1
+# g_val = -5e4
+
 # Initial data
 # particles[0][0].vel += [0, -20]
 # particles[0][0].vel += [0, -2]
-particles[0][0].acc += [0, -5e4]
-particles[0][0].extforce += [0, -5e4 * particles[0][0].material.rho]
+particles[0][0].acc += [0, g_val]
+particles[0][0].extforce += [0, g_val * particles[0][0].material.rho]
 
 # wall info
 wall_left = -4e-3
 wall_right = 4e-3
 wall_top = 2e-3
-wall_bottom = -2e-3
+wall_bottom = -1.5e-3
 wall = Wall(1, wall_left, wall_right, wall_top, wall_bottom)
 
 # contact properties
-normal_stiffness = 18 * \
-    material_dict.peridem(delta).bulk_modulus / \
-    (np.pi * np.power(delta, 4))
-damping_ratio = 0.9
-friction_coefficient = 0.9
+# normal_stiffness = 18 * \
+    # material_dict.peridem(delta).bulk_modulus / \
+    # (np.pi * np.power(delta, 4))
+normal_stiffness = material_dict.peridem(delte).cnot/normal_stiffness
+
+damping_ratio = 0.8
+friction_coefficient = 0.8
 
 contact = Contact(contact_radius, normal_stiffness,
                   damping_ratio, friction_coefficient)
