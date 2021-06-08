@@ -391,49 +391,7 @@ class ShapeList(object):
 
                 # print(shape.P)
                 if (plot_shape and (shape.P is not None)):
-                    dim = len(mesh.pos[0])
-                    print('dim = ', dim)
-                    if(dim ==2):
-                        print('Plotting shape')
-
-                        P1 = shape.P
-                        P2 = np.roll(shape.P,-1, axis = 0)
-                        ls =  [ [p1, p2] for p1, p2 in zip(P1,P2)] 
-
-                        lc = LineCollection(ls, linewidths=0.5, colors='b')
-                        plt.gca().add_collection(lc)
-
-                        if shape.nonconvex_interceptor is not None:
-                            # draw arrows
-                            line_dir = shape.nonconvex_interceptor.l_dir
-                            plt.gca().quiver(P1[:,0], P1[:,1], line_dir[:,0], line_dir[:,1], color = 'blue') 
-
-                        if shape.nonconvex_interceptor is not None:
-                            # print('Plotting nonconvex_interceptor', shape.nonconvex_interceptor)
-                            nci = shape.nonconvex_interceptor
-
-                            # P1 = shape.P
-                            # P2 = np.roll(shape.P,-1, axis = 0)
-                            # ls =  [ [p1, p2] for p1, p2 in zip(P1,P2)] 
-
-                            # lc = LineCollection(ls, linewidths=0.5, colors='b')
-                            # plt.gca().add_collection(lc)
-
-                            if nci.obt_bisec is not None:
-                                X12 = np.transpose(nci.obt_bisec[:,[0,2]])
-                                Y12 = np.transpose(nci.obt_bisec[:,[1,3]])
-                                plt.plot(X12, Y12, 'r-', linewidth = 0.5 )
-
-                            if nci.ext_bdry is not None:
-                                X12 = np.transpose(nci.ext_bdry[:,[0,2]])
-                                Y12 = np.transpose(nci.ext_bdry[:,[1,3]])
-                                plt.plot(X12, Y12, 'c-', linewidth = 0.5 )
-
-                        plt.axis('scaled')
-                        plt.gca().set_axis_off()
-                        plt.show()
-                    else:
-                        pass
+                    shape.plot(bdry_arrow=True, extended_bdry=True, angle_bisector=True)
             else:
                 # when the .msh is specified
                 mesh = genmesh(P_bdry=None, meshsize=None, msh_file=shape.msh_file, dimension = dimension, do_plot = plot_mesh)
