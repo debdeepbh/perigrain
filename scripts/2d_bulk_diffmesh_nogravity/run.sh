@@ -167,7 +167,7 @@ function run {
 }
 
 # call function
-run 'frac'
+#run 'frac'
 #run ''
 
 # generate experiment setup
@@ -224,13 +224,13 @@ n4frac
 ringfrac
 )
 
-walldata ''
+#walldata ''
 
 
 # identifying filename prefix for h5 and png file generated
 # a name for the collection  defined in stds
-#t_name='shapes' 
-t_name='roundness'
+t_name='shapes' 
+#t_name='roundness'
 
 function wallplot {
      #generate argument list of files with csv filenames
@@ -242,7 +242,8 @@ function wallplot {
     done
     echo "All input strings: $args"
     #python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
-    python3 $path/gen_combined_plots.py $args $str_pref $t_name
+    #python3 $path/gen_combined_plots.py $args $str_pref $t_name
+    python3 $path/plotcombinedtimestepdata.py $args $str_pref $t_name
 }
 
 
