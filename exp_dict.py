@@ -368,7 +368,7 @@ class ShapeList(object):
 
 
 
-    def generate_mesh(self, dimension = 2, contact_radius = None, plot_mesh = True, plot_shape = True, shapes_in_parallel=False):
+    def generate_mesh(self, dimension = 2, contact_radius = None, plot_mesh = True, plot_node_text=False, plot_shape = True, shapes_in_parallel=False):
         """Returns a rank-2 array of particle meshes
         : shapes_in_parallel: if set to true, it computes the particle properties in parallel for each shape. Otherwise, the NbdArr and boundary node computation happens in parallel for each node. 
         Outermost parallelization is most preferable. So, for multiple shapes/particles with small number of nodes requires this option to be true. On the other hands, for single particle with many nodes, setting this to false works best.
@@ -387,14 +387,17 @@ class ShapeList(object):
                 # print(i, end = ' ', flush=True)
             shape = self.shape_list[sh]
             if shape.msh_file is None:
-                mesh = genmesh(P_bdry=shape.P, pygmsh_geom=shape.pygmsh_geom, meshsize=self.meshsize_list[sh], dimension = dimension, do_plot = plot_mesh)
+                mesh = genmesh(P_bdry=shape.P, pygmsh_geom=shape.pygmsh_geom, meshsize=self.meshsize_list[sh], dimension = dimension)
 
                 # print(shape.P)
                 if (plot_shape and (shape.P is not None)):
                     shape.plot(bdry_arrow=True, extended_bdry=True, angle_bisector=True)
             else:
                 # when the .msh is specified
-                mesh = genmesh(P_bdry=None, meshsize=None, msh_file=shape.msh_file, dimension = dimension, do_plot = plot_mesh)
+                # mesh = genmesh(P_bdry=None, meshsize=None, msh_file=shape.msh_file, dimension = dimension, do_plot = plot_mesh)
+                mesh = genmesh(P_bdry=None, meshsize=None, msh_file=shape.msh_file, dimension = dimension)
+                if plot_mesh:
+                    mesh.plot(dotsize=10, plot_node_text=plot_node_text, highlight_bdry_nodes=True)
 
 
 
@@ -1074,7 +1077,8 @@ def get_incenter_mesh_loc(P, meshsize, dimension = 2, msh_file = None, modify_no
     :returns: a class that contains the location of the centers, and the radii
     """
     # generate mesh
-    mesh = genmesh(P, meshsize, msh_file = msh_file, do_plot = False, dimension = dimension)
+    # mesh = genmesh(P, meshsize, msh_file = msh_file, do_plot = False, dimension = dimension)
+    mesh = genmesh(P, meshsize, msh_file = msh_file, dimension = dimension)
 
 
     if (dimension ==2):
