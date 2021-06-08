@@ -90,6 +90,10 @@ for i in range(msh.count()):
         SL.append(shape=shape_dict.small_disk(steps=4, scaling=msh.incircle_rad[i]), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
     elif sys.argv[1] == 'ring':
         SL.append(shape=shape_dict.wheel_annulus(scaling=msh.incircle_rad[i], inner_circle_ratio=0.6, meshsize=meshsize, filename_suffix=str(i)), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
+    elif sys.argv[1] == 'ring0.2':
+        SL.append(shape=shape_dict.wheel_annulus(scaling=msh.incircle_rad[i], inner_circle_ratio=0.2, meshsize=meshsize, filename_suffix=str(i)), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
+    elif sys.argv[1] == 'ring0.4':
+        SL.append(shape=shape_dict.wheel_annulus(scaling=msh.incircle_rad[i], inner_circle_ratio=0.4, meshsize=meshsize, filename_suffix=str(i)), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
         # SL.append(shape=shape_dict.wheel_annulus(scaling=wheel_rad, inner_circle_ratio=0.7, meshsize=meshsize) , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
     else:
         SL.append(shape=shape_dict.perturbed_disk(seed=i, steps=16, scaling=msh.incircle_rad[i], std= float(sys.argv[1]) ), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))

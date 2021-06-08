@@ -11,11 +11,13 @@ stds=(
 #0.3
 #0.4
 #0.6
-ring
+#ring
+ring0.2
+ring0.4
 )
 
-#resume="no"
-resume="yes"
+resume="no"
+#resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -167,7 +169,7 @@ function run {
 }
 
 # call function
-#run 'frac'
+run 'frac'
 #run ''
 
 # generate experiment setup
@@ -218,13 +220,15 @@ stds=(
 #0.1frac
 #0.2frac
 #0.3frac
-0.4frac
-plusfrac
-n4frac
-ringfrac
+#0.4frac
+#plusfrac
+#n4frac
+#ringfrac
+ring0.2frac
+ring0.4frac
 )
 
-#walldata ''
+walldata ''
 
 
 # identifying filename prefix for h5 and png file generated

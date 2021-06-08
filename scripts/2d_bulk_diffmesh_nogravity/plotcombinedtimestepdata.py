@@ -91,6 +91,7 @@ for i in range(len(f)):
             label=shape[i],
             )
 
+plt.xlim(0,1)
 plt.xlabel(pair[0])
 plt.ylabel(pair[1])
 plt.gca().legend()
@@ -102,6 +103,7 @@ plt.close()
 
 #######################################################################
 pair = ['volume_fraction', 'bulk_damage']
+plt.xlim(0,1)
 png_file = 'volfrac_v_damage.png'
 
 figure(figsize=fig_size)
@@ -113,6 +115,7 @@ for i in range(len(f)):
             label=shape[i],
             )
 
+plt.xlim(0,1)
 plt.xlabel(pair[0])
 plt.ylabel(pair[1])
 plt.gca().legend()
@@ -137,6 +140,7 @@ for i in range(len(f)):
             label=shape[i],
             )
 
+plt.xlim(0,1)
 plt.xlabel(pair[0])
 plt.ylabel(pair[1])
 plt.gca().legend()
