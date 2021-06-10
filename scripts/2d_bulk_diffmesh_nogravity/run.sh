@@ -11,9 +11,9 @@ stds=(
 #0.3
 #0.4
 #0.6
-#ring
-ring0.2
-ring0.4
+ring
+#ring0.2
+#ring0.4
 )
 
 resume="no"
@@ -205,7 +205,6 @@ function walldata {
 	#echo "Running: python3 $path/gendamagedata.py 1 $last $data_loc"
 	#python3 $path/gendamagedata.py 1 $last $data_loc
 
-	echo "Running: python3 $path/gendamagedata.py 1 $last $data_loc"
 	python3 $path/gentimestepdata.py 1 $last $data_loc
     done
 }
@@ -223,9 +222,9 @@ stds=(
 #0.4frac
 #plusfrac
 #n4frac
-#ringfrac
-ring0.2frac
-ring0.4frac
+ringfrac
+#ring0.2frac
+#ring0.4frac
 )
 
 walldata ''
@@ -251,6 +250,6 @@ function wallplot {
 }
 
 
-wallplot ''
+#wallplot ''
 
 

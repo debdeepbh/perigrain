@@ -23,22 +23,19 @@ fields = [
         'particle_force',
         ] 
 
-# saving to file
-combined_file = 'output/timestep_data.h5'
-#######################################################################
-loc = 'output/hdf5/'
+loc = argv[-1]
 plti = read_plotinfo(loc+'plotinfo.h5')
 dim = plti.dim
+plti.fc = int(argv[1])
+plti.lc = int(argv[2])
 
-# override here
-if len(argv) == 4:
-    plti.fc = int(argv[1])
-    plti.lc = int(argv[2])
-else:
-    print('Wrong number of argv.')
+# saving to file
+combined_file = loc+'timestep_data.h5'
+#######################################################################
+
 
 # load the main experiment setup data
-exp_b = load_setup.read_setup('data/hdf5/all.h5')
+exp_b = load_setup.read_setup(loc+'all.h5')
 ######################################################################
 def compute_all(t):
     return extract_bulk(t, loc, fields, exp_b, plti)
@@ -54,10 +51,11 @@ print('Time taken: ', time.time() - start)
 
 
 # convert to h5 file and save
+print('Saving timestep data to:', combined_file)
 with h5py.File(combined_file, 'w') as f:
     for i, field in enumerate(fields):
         col = [v[i] for v in V]
-        print(col)
+        # print(col)
         # f.create_dataset(field, data=np.array(col))
         f.create_dataset(field, data=col)
 
