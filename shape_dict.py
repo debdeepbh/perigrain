@@ -16,7 +16,7 @@ class Shape:
         self.nonconvex_interceptor = nonconvex_interceptor
         self.msh_file = msh_file
 
-    def plot(self, bdry_arrow=True, extended_bdry=True, angle_bisector=True):
+    def plot(self, bdry_arrow=True, extended_bdry=True, angle_bisector=True, plot_bounding_ball=False, bounding_ball_rad=1e-3, bounding_ball_steps=30):
         """Plot the shape
         :returns: TODO
 
@@ -54,6 +54,12 @@ class Shape:
                             X12 = np.transpose(nci.ext_bdry[:,[0,2]])
                             Y12 = np.transpose(nci.ext_bdry[:,[1,3]])
                             plt.plot(X12, Y12, 'c-', linewidth = 0.5 )
+                if plot_bounding_ball:
+                    if dim==2:
+                        angles = np.linspace(0, 2* np.pi, num = bounding_ball_steps, endpoint = True)
+                        P = bounding_ball_rad * np.array([np.cos(angles), np.sin(angles)]).transpose()
+                        # return column matrices
+                        plt.plot(P[:,0], P[:,1])
 
                 plt.axis('scaled')
                 plt.gca().set_axis_off()

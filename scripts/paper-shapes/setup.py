@@ -27,12 +27,15 @@ pacman_angle = np.pi/2
 # shape=shape_dict.pacman(angle = pacman_angle) 
 # shape.plot(bdry_arrow=False, extended_bdry=False, angle_bisector=False)
 
-filename_suffix='00'
+# filename_suffix='00'
+# shape=shape_dict.wheel_annulus(scaling=1e-3, inner_circle_ratio=0.5,  meshsize=meshsize, nci_steps=20, filename_suffix=filename_suffix)
+# shape=shape_dict.wheel_annulus(scaling=1e-3, inner_circle_ratio=0.5,  meshsize=meshsize, nci_steps=20, filename_suffix=filename_suffix)
+shape=shape_dict.perturbed_disk(steps=22, seed=1, scaling=1e-3, std=0.4, angle_drift_amp=1e-3, angle_drift_std_ratio=0.25)
 
-shape=shape_dict.wheel_annulus(scaling=1e-3, inner_circle_ratio=0.5,  meshsize=meshsize, nci_steps=20, filename_suffix=filename_suffix)
+
+# msh_file = 'meshdata/ring_'+str(filename_suffix)+'.msh'
+# mesh = genmesh(P_bdry=None, meshsize=meshsize, pygmsh_geom=None, msh_file = msh_file, dimension = 2, mesh_optimize=True)
+
 # shape.plot()
-
-msh_file = 'meshdata/ring_'+str(filename_suffix)+'.msh'
-mesh = genmesh(P_bdry=None, meshsize=meshsize, pygmsh_geom=None, msh_file = msh_file, dimension = 2, mesh_optimize=True)
-
-mesh.plot(dotsize=10, plot_node_text=False, highlight_bdry_nodes=False)
+shape.plot(bdry_arrow=False, extended_bdry=False, angle_bisector=False, plot_bounding_ball=True, bounding_ball_steps=50)
+# mesh.plot(dotsize=10, plot_node_text=False, highlight_bdry_nodes=False)
