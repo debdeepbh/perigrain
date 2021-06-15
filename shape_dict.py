@@ -5,6 +5,9 @@ import numpy as np
 import gmsh
 import sys
 
+from matplotlib.collections import LineCollection
+import matplotlib.pyplot as plt
+
 class Shape:
     """Returns the boundary nodes and the nonconvex_interceptor"""
     def __init__(self, P, nonconvex_interceptor=None, msh_file = None, pygmsh_geom=None):
@@ -12,6 +15,57 @@ class Shape:
         self.pygmsh_geom = pygmsh_geom
         self.nonconvex_interceptor = nonconvex_interceptor
         self.msh_file = msh_file
+
+    def plot(self, bdry_arrow=True, extended_bdry=True, angle_bisector=True, plot_bounding_ball=False, bounding_ball_rad=1e-3, bounding_ball_steps=30):
+        """Plot the shape
+        :returns: TODO
+
+        """
+        if (self.P is not None):
+            dim = len(self.P[0])
+            print('dim = ', dim)
+            if(dim ==2):
+                print('Plotting shape')
+                P1 = self.P
+                P2 = np.roll(self.P,-1, axis = 0)
+                ls =  [ [p1, p2] for p1, p2 in zip(P1,P2)] 
+                lc = LineCollection(ls, linewidths=0.5, colors='b')
+                plt.gca().add_collection(lc)
+
+                if self.nonconvex_interceptor is not None:
+                    # draw arrows
+                    line_dir = self.nonconvex_interceptor.l_dir
+                    if bdry_arrow:
+                        plt.gca().quiver(P1[:,0], P1[:,1], line_dir[:,0], line_dir[:,1], color = 'blue') 
+                    else:
+                        pass
+
+                    # print('Plotting nonconvex_interceptor', shape.nonconvex_interceptor)
+                    nci = self.nonconvex_interceptor
+
+                    if angle_bisector:
+                        if nci.obt_bisec is not None:
+                            X12 = np.transpose(nci.obt_bisec[:,[0,2]])
+                            Y12 = np.transpose(nci.obt_bisec[:,[1,3]])
+                            plt.plot(X12, Y12, 'r-', linewidth = 0.5 )
+
+                    if extended_bdry:
+                        if nci.ext_bdry is not None:
+                            X12 = np.transpose(nci.ext_bdry[:,[0,2]])
+                            Y12 = np.transpose(nci.ext_bdry[:,[1,3]])
+                            plt.plot(X12, Y12, 'c-', linewidth = 0.5 )
+                if plot_bounding_ball:
+                    if dim==2:
+                        angles = np.linspace(0, 2* np.pi, num = bounding_ball_steps, endpoint = True)
+                        P = bounding_ball_rad * np.array([np.cos(angles), np.sin(angles)]).transpose()
+                        # return column matrices
+                        plt.plot(P[:,0], P[:,1])
+
+                plt.axis('scaled')
+                plt.gca().set_axis_off()
+                plt.show()
+            else:
+                pass
 
 class NonConvexInterceptor(object):
     """ A set of lines that intersect with bonds that extend beyond the domain"""

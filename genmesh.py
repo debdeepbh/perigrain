@@ -34,10 +34,94 @@ class ReturnValue(object):
         E = np.unique(E, axis = 0)
         return E
 
+    def plot(self, dotsize=10, plot_node_text=True, highlight_bdry_nodes=True):
+        """plot the mesh
+        :returns: TODO
+
+        """
+        # print(Pos)
+
+        Pos = self.pos
+
+        dimension = len(Pos[0])
+
+
+        if dimension==1:
+            # Plot the mesh
+            plt.scatter(Pos[:,0], Pos[:,1], s = dotsize, marker = '.', linewidth = 0, cmap='viridis')
+        elif dimension==2:
+            # Plot the mesh
+            plt.scatter(Pos[:,0], Pos[:,1], s = dotsize, marker = '.', linewidth = 0, cmap='viridis')
+
+            # highlight boundary nodes
+            if highlight_bdry_nodes:
+                plt.scatter(Pos[self.bdry_nodes,0], Pos[self.bdry_nodes,1], s = dotsize*1.1,  linewidth = 0 )
+
+            # # text
+            if plot_node_text:
+                for i in range(0,len(Pos)):
+                    plt.annotate(str(i), (Pos[i,0], Pos[i,1]))
+
+
+            plt.axis('scaled')
+
+        elif dimension==3:
+
+            fig = plt.figure()
+            # ax = fig.add_subplot(111, projection='3d')
+            ax = Axes3D(fig)
+
+            # Plot the mesh
+            ax.scatter(Pos[:,0], Pos[:,1], Pos[:,2], s = dotsize, marker = '.', linewidth = 0, cmap='viridis')
+
+            # highlight boundary nodes
+            if highlight_bdry_nodes:
+                ax.scatter(Pos[self.bdry_nodes,0], Pos[self.bdry_nodes,1], Pos[self.bdry_nodes,2], s = dotsize*1.1,  linewidth = 0 )
+
+            # # text
+            if plot_node_text:
+                for i in range(0,len(Pos)):
+                    ax.text(Pos[i,0], Pos[i,1], Pos[i,2], str(i))
+
+
+            # ax.set_box_aspect((1,1,1))
+            # ax.set_aspect('equal')
+            # Create cubic bounding box to simulate equal aspect ratio
+            # ax.pbaspect = [1.0, 1.0, 0.25]
+
+            ## Fix aspect ratio
+            ## def axisEqual3D(ax):
+            # extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
+            # sz = extents[:,1] - extents[:,0]
+            # centers = np.mean(extents, axis=1)
+            # maxsize = max(abs(sz))
+            # r = maxsize/2
+            # for ctr, dim in zip(centers, 'xyz'):
+                # getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
+
+            # print(np.amax(np.abs(Pos)))
+            mx = np.amax(np.abs(Pos))
+
+            XYZlim = [-mx, mx]
+            ax.set_xlim3d(XYZlim)
+            ax.set_ylim3d(XYZlim)
+            ax.set_zlim3d(XYZlim)
+            # ax.set_aspect('equal')
+            ax.set_box_aspect((1, 1, 1))
+
+            ## Plot properties
+            ax.grid(False)
+            # plt.axis('off')
+
+            # plt.savefig('mesh.png', dpi=200, bbox_inches='tight')
+
+
+        plt.show()
 
 
         
-def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, do_plot = True, dimension = 2, dotsize = 10, mesh_optimize=True):
+# def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, do_plot = True, dimension = 2, dotsize = 10, mesh_optimize=True):
+def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, dimension = 2, mesh_optimize=True):
     """Generate a mesh from given polygon
     :P_bdry: an array of boundary points
     :meshsize: 
@@ -205,84 +289,6 @@ def genmesh(P_bdry, meshsize, pygmsh_geom=None, msh_file = None, do_plot = True,
     # print('bdry_nodes', bdry_nodes)
     # print('bdry_edges', bdry_edges)
 
-    if do_plot:
-        # print(Pos)
-
-
-        if dimension==1:
-            # Plot the mesh
-            plt.scatter(Pos[:,0], Pos[:,1], s = dotsize, marker = '.', linewidth = 0, cmap='viridis')
-        elif dimension==2:
-            # Plot the mesh
-            plt.scatter(Pos[:,0], Pos[:,1], s = dotsize, marker = '.', linewidth = 0, cmap='viridis')
-
-            # highlight boundary nodes
-            plt.scatter(Pos[bdry_nodes,0], Pos[bdry_nodes,1], s = dotsize*1.1,  linewidth = 0 )
-
-            # # text
-            for i in range(0,len(Pos)):
-                plt.annotate(str(i), (Pos[i,0], Pos[i,1]))
-
-
-            plt.axis('scaled')
-
-        elif dimension==3:
-            plot_text = 0
-
-            fig = plt.figure()
-            # ax = fig.add_subplot(111, projection='3d')
-            ax = Axes3D(fig)
-
-            # fig = plt.figure(figsize = (10, 7))
-            # fig = plt.figure()
-            # ax = plt.axes(projection ="3d")
-            # ax = fig.add_subplot(111, projection='3d')
-
-            # Plot the mesh
-            ax.scatter(Pos[:,0], Pos[:,1], Pos[:,2], s = dotsize, marker = '.', linewidth = 0, cmap='viridis')
-
-            # highlight boundary nodes
-            ax.scatter(Pos[bdry_nodes,0], Pos[bdry_nodes,1], Pos[bdry_nodes,2], s = dotsize*1.1,  linewidth = 0 )
-
-            # # text
-            if plot_text:
-                for i in range(0,len(Pos)):
-                    ax.text(Pos[i,0], Pos[i,1], Pos[i,2], str(i))
-
-
-            # ax.set_box_aspect((1,1,1))
-            # ax.set_aspect('equal')
-            # Create cubic bounding box to simulate equal aspect ratio
-            # ax.pbaspect = [1.0, 1.0, 0.25]
-
-            ## Fix aspect ratio
-            ## def axisEqual3D(ax):
-            # extents = np.array([getattr(ax, 'get_{}lim'.format(dim))() for dim in 'xyz'])
-            # sz = extents[:,1] - extents[:,0]
-            # centers = np.mean(extents, axis=1)
-            # maxsize = max(abs(sz))
-            # r = maxsize/2
-            # for ctr, dim in zip(centers, 'xyz'):
-                # getattr(ax, 'set_{}lim'.format(dim))(ctr - r, ctr + r)
-
-            # print(np.amax(np.abs(Pos)))
-            mx = np.amax(np.abs(Pos))
-
-            XYZlim = [-mx, mx]
-            ax.set_xlim3d(XYZlim)
-            ax.set_ylim3d(XYZlim)
-            ax.set_zlim3d(XYZlim)
-            # ax.set_aspect('equal')
-            ax.set_box_aspect((1, 1, 1))
-
-            ## Plot properties
-            ax.grid(False)
-            # plt.axis('off')
-
-            # plt.savefig('mesh.png', dpi=200, bbox_inches='tight')
-
-
-        plt.show()
 
     return ReturnValue(Pos, area, bdry_nodes, T, bdry_edges)
 
