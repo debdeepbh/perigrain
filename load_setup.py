@@ -108,7 +108,7 @@ class Experiment_brief(object):
 
 
 
-    def plot(self, by_CurrPos = False, plot_scatter = True, plot_delta = True, plot_contact_rad = True, plot_bonds = False, plot_bdry_nodes = False, plot_bdry_edges= True, edge_alpha = 0.2, plot_wall = True, wall_linewidth = 1, plot_wall_faces = False, wall_color = 'cyan', wall_alpha = 0.1, camera_angle = None, do_plot = True, do_save = True, save_filename = 'setup.png', dotsize = 10, plot_vol = False, linewidth = 0.3, limits = None, remove_axes=False, grid  = False, colorbar=True, colorlim=None, show_particle_index=False, cmap_name='viridis'):
+    def plot(self, by_CurrPos = False, plot_scatter = True, plot_delta = True, plot_contact_rad = True, plot_bonds = False, plot_bdry_nodes = False, plot_bdry_edges= True, edge_alpha = 0.2, plot_wall = True, wall_linewidth = 1, plot_wall_faces = False, wall_color = 'cyan', wall_alpha = 0.1, camera_angle = None, do_plot = True, do_save = True, save_filename = 'setup.png', dotsize = 10, plot_vol = False, linewidth = 0.3, limits = None, remove_axes=False, grid  = False, colorbar=True, colorlim=None, show_particle_index=False, cmap_name='viridis', seaborn=False):
         """TODO: Docstring for plot.
 
         :plot_delta: TODO
@@ -127,6 +127,9 @@ class Experiment_brief(object):
         dim = len(self.PArr[0].pos[0])
         # print('Dimension: ', dim)
 
+        if seaborn:
+            import seaborn as sns
+            sns.set()
 
         if dim ==3:
             fig = plt.figure()

@@ -109,23 +109,7 @@ def write_img(t):
     if q_col == 'damage':
         colorlim = [0, 1]
 
-    t_exp_b.plot(by_CurrPos=True, plot_scatter = True, plot_delta = 0, plot_contact_rad = 0, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 0, edge_alpha = 0.2, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_linewidth=1, wall_alpha=wall_alpha, camera_angle = camera_angle, do_plot = False, do_save = 1, save_filename = out_png, dotsize = 3, plot_vol = False, linewidth = 0.5, limits = limits, remove_axes=False, grid =True, colorbar=True, colorlim=colorlim)
-
-    # t_exp_b.plot(by_CurrPos=True, plot_scatter = True, plot_delta = 0, plot_contact_rad = 0, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 0, edge_alpha=0.2, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_alpha=wall_alpha, do_plot = False, do_save = 1, save_filename = out_png, dotsize = 10, linewidth = 1, remove_axes = True, grid = False)
-
-    # dotsize = 10
-    # # for P in enumerate(t_exp_b.PArr):
-    # for i in range(len(t_exp_b.PArr)):
-        # P = t_exp_b.PArr[i]
-        # q = np.sqrt(np.sum(np.square(P.force), axis=1)) #norm
-        # # q = np.sqrt(np.sum(np.square(vel), axis=1)) #norm
-        # # q = np.abs(vel[:,0]) #norm
-
-        # plt.scatter(P.CurrPos[:,0], P.CurrPos[:,1], c = q, s = dotsize, marker = '.', linewidth = 0, cmap='viridis')
-
-    # # saving plot
-    # matplotlib.pyplot.savefig(out_png, dpi=200, bbox_inches='tight')
-    # plt.close()
+    t_exp_b.plot(by_CurrPos=True, plot_scatter = True, plot_delta = 0, plot_contact_rad = 0, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 0, edge_alpha = 0.2, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_linewidth=1, wall_alpha=wall_alpha, camera_angle = camera_angle, do_plot = False, do_save = 1, save_filename = out_png, dotsize = 3, plot_vol = False, linewidth = 0.5, limits = limits, remove_axes=False, grid =True, colorbar=True, colorlim=colorlim, seaborn=True)
 
 start = time.time()
 
