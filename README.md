@@ -5,7 +5,7 @@ Granular media simulation with fracture using peridynamics
 
 ```bash
 # system packages
-sudo apt-get install -y libhdf5-serial-dev gmsh
+sudo apt-get install -y libhdf5-serial-dev gmsh python3-tk
 
 # eigen library
 wget -c https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.tar.gz 

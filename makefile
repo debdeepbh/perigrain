@@ -8,7 +8,8 @@ INCLUDE_DIR = src
 
 ## Libraries: External tools, csv-parser, Eigen etc
 #EIGEN_DIR = lib/eigen-3.3.8
-EIGEN_DIR = lib/eigen-3.3.9
+#EIGEN_DIR = lib/eigen-3.3.9
+EIGEN_DIR = ../peri-ice/lib/eigen-3.3.9
 #INIH_DIR = lib/inih
 #EIGEN_DIR = lib/eigen-3.2.10
 #CSV_DIR = lib/fast-cpp-csv-parser
