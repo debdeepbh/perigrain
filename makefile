@@ -25,7 +25,8 @@ CPPFLAGS += -Wall -Wextra # -Wshadow # -Wcast-align # -Wold-style-cast
 CPPFLAGS += -I$(INCLUDE_DIR)
 CPPFLAGS += -I$(EIGEN_DIR)
 #CPPFLAGS += -I$(INIH_DIR)
-CPPFLAGS += -I /usr/include/hdf5/serial/ -lhdf5_serial -lhdf5_cpp
+#CPPFLAGS += -I /usr/include/hdf5/serial/ -lhdf5_serial -lhdf5_cpp
+CPPFLAGS += -I/usr/include/hdf5/serial/ -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5_serial -lhdf5_cpp
 #CPPFLAGS += -I$(CSV_DIR)
 
 #CPPFLAGS += -lpthread
