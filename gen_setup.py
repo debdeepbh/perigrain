@@ -8,7 +8,7 @@ import load_setup
 # exp = exp_dict.bar()
 # exp = exp_dict.flow()
 # exp = exp_dict.worm()
-# exp = exp_dict.pendulum()
+exp = exp_dict.pendulum()
 # exp = exp_dict.own_weight_float_force()
 # exp = exp_dict.own_weight()
 # exp = exp_dict.particle_confined()

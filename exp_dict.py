@@ -392,6 +392,8 @@ class ShapeList(object):
                 # print(shape.P)
                 if (plot_shape and (shape.P is not None)):
                     shape.plot(bdry_arrow=True, extended_bdry=True, angle_bisector=True)
+                if plot_mesh:
+                    mesh.plot(dotsize=10, plot_node_text=plot_node_text, highlight_bdry_nodes=True)
             else:
                 # when the .msh is specified
                 # mesh = genmesh(P_bdry=None, meshsize=None, msh_file=shape.msh_file, dimension = dimension, do_plot = plot_mesh)
@@ -1752,7 +1754,7 @@ def pendulum():
     SL.append(shape=shape_dict.plank(l=10e-3, s=0.25e-3), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, G_scale=0.5, K_scale=0.5, Gnot_scale=0.1, rho_scale=1))
 
     # particles = SL.generate_mesh(dimension = 1, contact_radius = contact_radius, plot_mesh=True, plot_shape=True)
-    particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=True, plot_shape=True)
+    particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=True, plot_shape=False, plot_node_text=True, shapes_in_parallel=False)
 
     # apply transformation
     # particles[0][0].rotate(-np.pi/2)

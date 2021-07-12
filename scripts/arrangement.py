@@ -21,10 +21,11 @@ P = np.array([
     [wall_left, wall_top]
     ])
 # particle generation spacing
-P_meshsize = 3.5e-3
+P_meshsize = 3.5e-3/2
 
 msh = exp_dict.get_incenter_mesh_loc(P, P_meshsize, modify_nodal_circles= False, gen_bdry = False )
-msh.plot(save_file = '/home/debdeep/gdrive/work/peridynamics/granular/data/incircles_orig.png' )
+# msh.plot(save_file = '/home/debdeep/gdrive/work/peridynamics/granular/data/incircles_orig.png' )
+msh.plot()
 msh.info()
 plt.close()
 
@@ -34,6 +35,7 @@ plt.close()
 # plt.close()
 
 msh = exp_dict.get_incenter_mesh_loc(P, P_meshsize, modify_nodal_circles= True, gen_bdry = True )
-msh.plot(save_file = '/home/debdeep/gdrive/work/peridynamics/granular/data/incircles_bdry.png' )
+# msh.plot(save_file = '/home/debdeep/gdrive/work/peridynamics/granular/data/incircles_bdry.png' )
+msh.plot()
 msh.info()
 plt.close()
