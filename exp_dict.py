@@ -1770,7 +1770,10 @@ def pendulum():
     particles[0][0].extforce += [0, -5e4 * particles[0][0].material.rho]
 
     # clamped nodes
-    particles[0][0].clamped_nodes.append(0)
+    # particles[0][0].clamped_nodes.append(0)
+
+    particles[0][0].clamped_nodes.append(100)
+
     # particles[0][0].clamped_nodes.append(3)
     # particles[0][0].vol[0] *= 2
     # particles[0][0].clamped_nodes.append(3)
