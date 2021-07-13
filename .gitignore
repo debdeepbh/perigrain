@@ -33,6 +33,7 @@
 
 # vim
 *.swp
+*.swn
 *.swo
 
 # tags

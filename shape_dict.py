@@ -646,6 +646,70 @@ def pygmsh_geom_test(scaling=5e-3, meshsize = 0.5e-3):
 def annulus():
     return Shape(P=None, nonconvex_interceptor=None, msh_file='meshdata/2d/annulus.msh')
 
+def unif_rect(x_min=-1, y_min=-1, length_x=2, length_y=2, meshsize=0.5, ny=4, filename_suffix='00'):
+    """
+    :returns: Rectangle with uniform mesh using extrusion
+    :meshsize: meshsize in the x direction (=length_x/nx)
+    :ny: number of times to extrude in the y-direction (meshsize in the y-dir: length_y/nx)
+    :filename_suffix: some string tag that is appended to the generated msh file
+
+    """
+    msh_file = 'meshdata/unif_'+str(filename_suffix)+'.msh'
+    gmsh.initialize()
+
+    
+    # - the first 3 arguments are the point coordinates (x, y, z)
+    # - the next (optional) argument is the target mesh size close to the point
+    # - the last (optional) argument is the point tag (a stricly positive integer
+    #   that uniquely identifies the point)
+    # gmsh.model.occ.addPoint(0, 0, 0, meshsize, 1)
+
+    # gmsh.model.occ.addCircle(0, 0, 0, scaling, 1)
+    # gmsh.model.occ.addCircle(0, 0, 0, inner_rad, 2)
+    # gmsh.model.occ.addCurveLoop([1], 1)
+    # gmsh.model.occ.addCurveLoop([2], 2)
+    # gmsh.model.occ.addPlaneSurface([1, 2], 1)
+
+    gmsh.model.occ.addPoint(x_min, y_min, 0, meshSize=meshsize, tag=1)
+    gmsh.model.occ.addPoint(x_min+length_x, y_min, 0, meshSize=meshsize, tag=2)
+    gmsh.model.occ.addLine(1,2, tag=1)
+    # extruding the line: dimension 1, tag 1 i.e., (1,1)
+    # numElements is the number of steps by which we extrude, heights is the scaling factor
+    gmsh.model.occ.extrude([(1, 1)], 0, length_y, 0, numElements=[ny], heights=[1])
+
+
+    # gmsh.option.setNumber("Mesh.Algorithm", 6);
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMin", meshsize);
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMax", meshsize);
+
+    # gmsh.option.setNumber("Mesh.CharacteristicLengthFactor", 0.5);
+
+    gmsh.option.setNumber("General.Verbosity", 0);
+
+    # obligatory before generating the mesh
+    gmsh.model.occ.synchronize()
+    # We can then generate a 2D mesh...
+    gmsh.model.mesh.generate(2)
+    # save to file
+    gmsh.write(msh_file)
+    # close gmsh, as opposed to initialize()
+    gmsh.finalize()
+    # if '-nopopup' not in sys.argv:
+    # gmsh.fltk.run()
+
+    # nonconvex_interceptor
+    # nci_steps = 10
+    # angles = np.linspace( 2* np.pi, 0, num = nci_steps, endpoint = False)
+    # P = np.array([np.cos(angles), np.sin(angles)])
+    # # return column matrices
+    # P = inner_rad * P.transpose()
+    # nonconvex_interceptor = gen_nonconvex_interceptors(P)
+    # nonconvex_interceptor.use = 'all'
+
+    return Shape(P=None, nonconvex_interceptor=None, msh_file=msh_file)
+    # return Shape(P=None, nonconvex_interceptor=nonconvex_interceptor, msh_file=msh_file)
+    # return Shape(P=None, nonconvex_interceptor=None, msh_file=msh_file)
+
 def wheel_annulus(scaling=1e-3, meshsize=1e-3, inner_circle_ratio=0.7, filename_suffix='00', nci_steps=10):
     """
     :returns: TODO
