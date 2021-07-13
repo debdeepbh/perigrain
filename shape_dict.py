@@ -674,6 +674,7 @@ def unif_rect(x_min=-1, y_min=-1, length_x=2, length_y=2, meshsize=0.5, ny=4, fi
     gmsh.model.occ.addPoint(x_min+length_x, y_min, 0, meshSize=meshsize, tag=2)
     gmsh.model.occ.addLine(1,2, tag=1)
     # extruding the line: dimension 1, tag 1 i.e., (1,1)
+    # 2nd, 3rd, 4th arguments are x, y, z values to which to extrude
     # numElements is the number of steps by which we extrude, heights is the scaling factor
     gmsh.model.occ.extrude([(1, 1)], 0, length_y, 0, numElements=[ny], heights=[1])
 

@@ -26,7 +26,7 @@ P = np.array([
 P_meshsize = 3.5e-3/2
 
  
-shape =  shape_dict.unif_test(x_min=-1, y_min=-1, length_x=2, length_y=2, meshsize=0.5, ny=4, filename_suffix='00')
+shape =  shape_dict.unif_rect(x_min=-1, y_min=-1, length_x=2, length_y=2, meshsize=2/8, ny=8, filename_suffix='00')
 msh = exp_dict.get_incenter_mesh_loc(P, P_meshsize, msh_file=shape.msh_file, modify_nodal_circles= False, gen_bdry = False )
 
 
