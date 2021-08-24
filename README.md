@@ -129,15 +129,12 @@ for 2D.
 
 # Todo
 
-- [ ] generate mesh programmically with gmsh api in python
-	- [x] nonconvex interceptors for the `.msh`-imported files
-	- [ ] Why are some bonds in `wheel_annulus` automatically removed (without nci)?
-	- [ ] fix fltk crash in ubuntu
+- [ ] In addition to `particle.torque` we need initial angular acceleration data, otherwise, initial angular acceleration is taken to be zero.
+* [ ] [Better to edit (a copy of) timeloop.cpp] How to simulate: particle first settles, then things are dropped on them
+
 
 	
 - [ ] Compression without gravity? (pre-computation of gravity takes too long)
-* [ ] Compute the total kinetic energy for plotting. Does fracture (without damping and friction) dissipate the kinetic energy?
-* [ ] [Better to edit (a copy of) timeloop.cpp] How to simulate: particle first settles, then things are dropped on them
 * [ ] To get a convex curve like the others test on `2d_bulk_small`
 	- [?] Equal grain size (maybe the disparity in cnot computation for scaled grains is causing extra/less force)
 	- [x] [didn't make any difference] Bigger grain size
@@ -258,6 +255,10 @@ Observation: as soon as the gravity is reduced, the particles bounce back up due
 - [x] (ans: minimal) Pass functions by pointer to class instead of the class, to speed up (check if true)
 - [x] Write matrices to binary format in matlab and read in c++ in binary to reduce size.
 - [x] Resuming ability
+- [x] generate mesh programmically with gmsh api in python
+	- [x] nonconvex interceptors for the `.msh`-imported files
+	- [x] Why are some bonds in `wheel_annulus` automatically removed (without nci)?
+	- [x] fix fltk crash in ubuntu
 
 Preserving row vs column distinction of a vector comes with the extra baggage that quantities like position of the nodes have to be vector of vectors of Vector2d.
 
