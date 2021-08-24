@@ -131,6 +131,8 @@ for 2D.
 
 - [ ] In addition to `particle.torque` we need initial angular acceleration data, otherwise, initial angular acceleration is taken to be zero.
 * [ ] [Better to edit (a copy of) timeloop.cpp] How to simulate: particle first settles, then things are dropped on them
+- [ ] parameter reading from config file to change the torque
+- [ ] Initial position of the wheel toward the side, not center
 
 
 	
