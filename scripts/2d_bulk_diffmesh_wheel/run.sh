@@ -227,7 +227,7 @@ ringfrac
 #ring0.4frac
 )
 
-walldata ''
+#walldata ''
 
 
 # identifying filename prefix for h5 and png file generated

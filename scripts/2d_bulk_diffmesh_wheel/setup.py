@@ -122,7 +122,7 @@ particles[0][0].extforce += [0, g_val * particles[i][0].material.rho]
 
 # torque
 particles[0][0].torque_axis = 2
-particles[0][0].torque_val = 1e7
+particles[0][0].torque_val = 3e7
 
 ## Apply transformation
 seed(1)
