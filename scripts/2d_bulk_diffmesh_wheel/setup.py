@@ -116,13 +116,14 @@ for i in range(msh.count()):
 particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=False)
 
 # for the wheel
+particles[0][0].breakable = 0
 particles[0][0].shift([0, bulk_wall_top+wheel_rad+contact_radius/2])
 particles[0][0].acc += [0, g_val]
 particles[0][0].extforce += [0, g_val * particles[i][0].material.rho]
 
 # torque
 particles[0][0].torque_axis = 2
-particles[0][0].torque_val = 3e7
+particles[0][0].torque_val = 2e7
 
 ## Apply transformation
 seed(1)
