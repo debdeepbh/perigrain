@@ -108,6 +108,17 @@ The more the coefficient of friction, the larger the oscillation
 * peridynamic force in not computed when `movable=0` or `stoppable=0`
 * If you want the particle to move only via external force, set `0,1,0`
 
+## Start simulation with a fixed particle and mobilize it after a specified timestep
+- In `exp_dict.py` set `particles[ind].movable=0` and `particle[ind].stoppable=0`
+- In `main.conf` add
+```
+set_movable_index = ind
+set_movable_timestep = ts
+set_stoppable_index = ind
+set_stoppable_timestep = ts
+```
+where `ts` is the timestep at which `stoppable` and `movable` flags are set to 1.
+
 # [fixed it now by deleting points with zero volume] Notes regarding mesh generated via `.geo` files
 **Note:** In `.geo` files, do **NOT** include points that are _not_ used in generating mesh. 
 Listing unused point `Point(p)` in the `.geo` file creates a `.msh` file that has `p` in it but `p` is not used as any element vertex. Therefore, `genmesh()` produces a node with _zero_ volume, that crashes the simulation by producing `-nan` values.
@@ -129,8 +140,9 @@ for 2D.
 
 # Todo
 
-- [ ] In addition to `particle.torque` we need initial angular acceleration data, otherwise, initial angular acceleration is taken to be zero.
 * [ ] [Better to edit (a copy of) timeloop.cpp] How to simulate: particle first settles, then things are dropped on them
+	- [ ] config file: 
+- [ ] In addition to `particle.torque` we need initial angular acceleration data, otherwise, initial angular acceleration is taken to be zero.
 - [ ] parameter reading from config file to change the torque
 - [ ] Initial position of the wheel toward the side, not center
 
