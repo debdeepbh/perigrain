@@ -597,9 +597,11 @@ void run_timeloop(vector<ParticleN<dim>> &PArr, Timeloop TL, Contact CN,
 
 
   if (TL.set_movable_index != (-1)) {
-      if (TL.set_movable_timestep == t) {
+      auto part_ind = (unsigned) TL.set_movable_index;
+      auto part_ts = (unsigned) TL.set_movable_timestep;
+      if (part_ts == t) {
 	   std::cout << "Setting particle " << TL.set_movable_index << " to movable on timestep " << t << std::endl;
-	   PArr[i].movable = 1;
+	   PArr[part_ind].movable = 1;
       }
   }
 

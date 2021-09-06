@@ -1774,6 +1774,9 @@ def pendulum():
 
     particles[0][0].clamped_nodes.append(100)
 
+    ## Debug: to test set_movable_index
+    particles[0][0].movable = 0
+
     # particles[0][0].clamped_nodes.append(3)
     # particles[0][0].vol[0] *= 2
     # particles[0][0].clamped_nodes.append(3)
