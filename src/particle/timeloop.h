@@ -80,6 +80,10 @@ public:
   bool enable_torque = 0;
   unsigned extforce_maxstep = 0;
 
+  int set_movable_index = -1;
+  int set_movable_timestep = -1;
+
+
   // saving the runtime
   // double start_time;
   std::chrono::_V2::system_clock::time_point start_time;
@@ -177,6 +181,10 @@ public:
     extforce_maxstep = CFGV.extforce_maxstep;
     // self-contact
     enable_torque = CFGV.enable_torque;
+    // turn on movable
+    set_movable_index = CFGV.set_movable_index;
+    set_movable_timestep = CFGV.set_movable_timestep;
+
   };
 
 private:
@@ -534,6 +542,7 @@ void run_timeloop(vector<ParticleN<dim>> &PArr, Timeloop TL, Contact CN,
     last_counter = TL.timesteps / TL.modulo;
   }
 
+
   // Save plotinfo
   string plt_filename = "output/hdf5/plotinfo.h5";
   H5::H5File pl_fp(plt_filename, H5F_ACC_TRUNC);
@@ -585,6 +594,14 @@ void run_timeloop(vector<ParticleN<dim>> &PArr, Timeloop TL, Contact CN,
   for (unsigned t = 1; t <= TL.timesteps; ++t) {
     // set wall reaction to zero
     Wall.setzero_reaction();
+
+
+  if (TL.set_movable_index != (-1)) {
+      if (TL.set_movable_timestep == t) {
+	   std::cout << "Setting particle " << TL.set_movable_index << " to movable on timestep " << t << std::endl;
+	   PArr[i].movable = 1;
+      }
+  }
 
     // std::cout << "t = " << t << std::endl;
     // std::cout << t << " ";

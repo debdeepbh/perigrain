@@ -35,6 +35,10 @@ public:
     // torque
     bool enable_torque;
 
+    // turn on movable tag at a given timestep
+    int set_movable_index = -1;
+    int set_movable_timestep = -1;
+
     // messing with the wall
     double wall_left, wall_right, wall_top, wall_bottom;
     double wall_x_min, wall_y_min, wall_z_min, wall_x_max, wall_y_max, wall_z_max;
@@ -76,6 +80,10 @@ public:
 	normal_stiffness = -1;
 	damping_ratio = -1; 
 	friction_coefficient = -1;
+
+	// turn off movable tag
+	set_movable_index = -1;
+	set_movable_timestep = -1;
 	
 	// default value implies not loaded from the file
        wall_left   = -999;
@@ -177,6 +185,13 @@ public:
 
 		else if (name == "enable_torque") {
 		    enable_torque = std::stoi(value);
+		}
+
+		else if (name == "set_movable_index") {
+		    set_movable_index = std::stoi(value);
+		}
+		else if (name == "set_movable_timestep") {
+		    set_movable_timestep = std::stoi(value);
 		}
 
 		else if (name == "wall_left") {
