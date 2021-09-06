@@ -38,6 +38,9 @@ public:
     // turn on movable tag at a given timestep
     int set_movable_index = -1;
     int set_movable_timestep = -1;
+    // turn on stoppable tag at a given timestep
+    int set_stoppable_index = -1;
+    int set_stoppable_timestep = -1;
 
     // messing with the wall
     double wall_left, wall_right, wall_top, wall_bottom;
@@ -192,6 +195,12 @@ public:
 		}
 		else if (name == "set_movable_timestep") {
 		    set_movable_timestep = std::stoi(value);
+		}
+		else if (name == "set_stoppable_index") {
+		    set_stoppable_index = std::stoi(value);
+		}
+		else if (name == "set_stoppable_timestep") {
+		    set_stoppable_timestep = std::stoi(value);
 		}
 
 		else if (name == "wall_left") {

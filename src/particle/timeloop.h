@@ -82,6 +82,8 @@ public:
 
   int set_movable_index = -1;
   int set_movable_timestep = -1;
+  int set_stoppable_index = -1;
+  int set_stoppable_timestep = -1;
 
 
   // saving the runtime
@@ -184,6 +186,9 @@ public:
     // turn on movable
     set_movable_index = CFGV.set_movable_index;
     set_movable_timestep = CFGV.set_movable_timestep;
+    // turn on stoppable
+    set_stoppable_index = CFGV.set_stoppable_index;
+    set_stoppable_timestep = CFGV.set_stoppable_timestep;
 
   };
 
@@ -595,15 +600,23 @@ void run_timeloop(vector<ParticleN<dim>> &PArr, Timeloop TL, Contact CN,
     // set wall reaction to zero
     Wall.setzero_reaction();
 
+    if (TL.set_movable_index != (-1)) {
+	auto part_ind = (unsigned) TL.set_movable_index;
+	auto part_ts = (unsigned) TL.set_movable_timestep;
+	if (part_ts == t) {
+	    std::cout << "Setting particle " << TL.set_movable_index << " to movable on timestep " << t << std::endl;
+	    PArr[part_ind].movable = 1;
+	}
+    }
+    if (TL.set_stoppable_index != (-1)) {
+	auto part_ind = (unsigned) TL.set_stoppable_index;
+	auto part_ts = (unsigned) TL.set_stoppable_timestep;
+	if (part_ts == t) {
+	    std::cout << "Setting particle " << TL.set_stoppable_index << " to stoppable on timestep " << t << std::endl;
+	    PArr[part_ind].stoppable = 1;
+	}
+    }
 
-  if (TL.set_movable_index != (-1)) {
-      auto part_ind = (unsigned) TL.set_movable_index;
-      auto part_ts = (unsigned) TL.set_movable_timestep;
-      if (part_ts == t) {
-	   std::cout << "Setting particle " << TL.set_movable_index << " to movable on timestep " << t << std::endl;
-	   PArr[part_ind].movable = 1;
-      }
-  }
 
     // std::cout << "t = " << t << std::endl;
     // std::cout << t << " ";
@@ -612,11 +625,22 @@ void run_timeloop(vector<ParticleN<dim>> &PArr, Timeloop TL, Contact CN,
 // pragma here works [1]
 #pragma omp parallel for if (TL.run_parallel)
     for (unsigned i = 0; i < total_particles_univ; ++i) {
-      PArr[i].disp += TL.dt * PArr[i].vel + (TL.dt * TL.dt * 0.5) * PArr[i].acc;
+      if (PArr[i].movable) {
+	  PArr[i].disp += TL.dt * PArr[i].vel + (TL.dt * TL.dt * 0.5) * PArr[i].acc;
+      }
       PArr[i].CurrPos = PArr[i].pos + PArr[i].disp;
 
       // std::cout << PArr[i].mean_CurrPos() << std::endl;
     }
+
+    //unsigned iind = 20;
+    //std::cout << t  << " "
+	//<< " pos " << PArr[0].pos[iind] 
+	//<< " CurrPos " << PArr[0].CurrPos[iind] 
+	//<< " u " << PArr[0].disp[iind] 
+	//<< " v " << PArr[0].vel[iind] 
+	//<< " a " << PArr[0].acc[iind] 
+	//<< " f " << PArr[0].force[iind] << PArr[0].force[iind] << std::endl;
 
 /**********************************************************************
 contact force computation
@@ -725,44 +749,47 @@ contact force computation
         } else {
           ft_i += PArr[i].extforce;
         }
+
+
+	// external torque about the centroid
+	if (TL.enable_torque) {
+	    // centroid about which the torque is applied
+	    Matrix<double, 1, dim> c = PArr[i].mean_CurrPos();
+	    unsigned taxis = PArr[i].torque_axis;
+
+	    for (unsigned nn = 0; nn < PArr[i].CurrPos.size(); nn++) {
+		Matrix<double, 1, dim> r_vec_proj = PArr[i].CurrPos[nn] - c;
+		// project on the plane perpendicular to torque_axis
+		// In 2d, always set torque_axis=2 (i.e, z-axis)
+		if (dim==3) {
+		    r_vec_proj(taxis) = 0;
+		}
+		// perpendicular to r vector -> r_perp
+		Matrix<double, 1, dim> r_perp;
+		if (dim==3) {
+		    r_perp(taxis) = 0;
+		}
+		r_perp( (taxis+1)%3 ) = - r_vec_proj( (taxis+2)%3 );
+		r_perp( (taxis+2)%3 ) = r_vec_proj( (taxis+1)%3 );
+
+		// unit perpendicular direction to r vector -> r_perp
+		auto perp_norm = r_perp.norm();
+		if (perp_norm > 0) {
+		    r_perp /= perp_norm;
+		}
+		else
+		{
+		    r_perp( (taxis+1)%3 ) = 0;
+		    r_perp( (taxis+2)%3 ) = 0;
+		}
+
+		// add force density due to torque to the total force
+		ft_i[nn] += (PArr[i].torque_val * r_perp);
+	    }
+	}
+
       }
 
-      // external torque about the centroid
-      if (TL.enable_torque) {
-	  // centroid about which the torque is applied
-	  Matrix<double, 1, dim> c = PArr[i].mean_CurrPos();
-	  unsigned taxis = PArr[i].torque_axis;
-
-	  for (unsigned nn = 0; nn < PArr[i].CurrPos.size(); nn++) {
-	      Matrix<double, 1, dim> r_vec_proj = PArr[i].CurrPos[nn] - c;
-	      // project on the plane perpendicular to torque_axis
-	      // In 2d, always set torque_axis=2 (i.e, z-axis)
-	      if (dim==3) {
-		  r_vec_proj(taxis) = 0;
-	      }
-	      // perpendicular to r vector -> r_perp
-	      Matrix<double, 1, dim> r_perp;
-	      if (dim==3) {
-		  r_perp(taxis) = 0;
-	      }
-	      r_perp( (taxis+1)%3 ) = - r_vec_proj( (taxis+2)%3 );
-	      r_perp( (taxis+2)%3 ) = r_vec_proj( (taxis+1)%3 );
-
-	      // unit perpendicular direction to r vector -> r_perp
-	      auto perp_norm = r_perp.norm();
-	      if (perp_norm > 0) {
-		  r_perp /= perp_norm;
-	      }
-	      else
-	      {
-		  r_perp( (taxis+1)%3 ) = 0;
-		  r_perp( (taxis+2)%3 ) = 0;
-	      }
-
-	      // add force density due to torque to the total force
-	      ft_i[nn] += (PArr[i].torque_val * r_perp);
-	  }
-      }
 
       // store the computed value into the particle force
       PArr[i].force = ft_i;
