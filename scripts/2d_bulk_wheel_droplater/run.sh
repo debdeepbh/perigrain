@@ -11,7 +11,8 @@ stds=(
 #0.3
 0.4
 #0.6
-#ring
+ring
+plus
 #ring0.2
 #ring0.4
 )
@@ -170,92 +171,24 @@ function run {
 	mv output/img/*.png $dir/
 	mv output/vid/*.mp4 $dir/
 
-	sxiv $dir/*.png
+	sxiv $dir/*.png &
     done
 }
 
 # call function
-run 'frac'
+#run 'frac'
 #run ''
 
-# generate experiment setup
-#python3 $path/setup.py 0.2
-
-## copy the data
-#make getfresh_py
-
-#######################################################################
-# run later
-
-function walldata {
-     #generate argument list of files with csv filenames
+function velplot {
+    #generate argument list of files with csv filenames
     args=''
     for std in "${stds[@]}"
     do 
-	# subdirectory name
-	dir=${str_pref}$std$1
-	data_loc="$dir/h5/"
-
-	## get the last index
-	last=$(ls $dir/h5/tc_*.h5 | tail -1) # Get the largest indices
-	last=${last##*/} # strip the path
-	last="${last%.*}" # strip the extension
-	last=$(echo $last | awk -F '_' '{ print $2 }')
-
-	echo "last index = $last"
-	echo "input data location = $data_loc"
-
-	#echo "Running: python3 $path/genwallreaction.py 1 $last $data_loc"
-	#python3 $path/genwallreaction.py 1 $last $data_loc
-
-	#echo "Running: python3 $path/gendamagedata.py 1 $last $data_loc"
-	#python3 $path/gendamagedata.py 1 $last $data_loc
-
-	python3 $path/gentimestepdata.py 1 $last $data_loc
+	args="$args ${std}$1"
     done
+    echo "All shapes to input: $args"
+    python3 $path/velplot.py $args $str_pref
 }
 
-## To produce plots with and without fracture, turn of `run` and `run frac`
-stds=(
-#0
-#0.1
-#0.2
-#0.3
-#0.4
-#0.1frac
-#0.2frac
-#0.3frac
-#0.4frac
-#plusfrac
-#n4frac
-ringfrac
-#ring0.2frac
-#ring0.4frac
-)
-
-#walldata ''
-
-
-# identifying filename prefix for h5 and png file generated
-# a name for the collection  defined in stds
-t_name='shapes' 
-#t_name='roundness'
-
-function wallplot {
-     #generate argument list of files with csv filenames
-    args=''
-    for std in "${stds[@]}"
-    do 
-	args="$args ${std}"
-	#args="$args ${shape}$1"
-    done
-    echo "All input strings: $args"
-    #python3 $path/plot_force.py $args $str_pref $str_pref"force_plot.png"
-    #python3 $path/gen_combined_plots.py $args $str_pref $t_name
-    python3 $path/plotcombinedtimestepdata.py $args $str_pref $t_name
-}
-
-
-#wallplot ''
-
-
+# call function
+velplot 'frac'
