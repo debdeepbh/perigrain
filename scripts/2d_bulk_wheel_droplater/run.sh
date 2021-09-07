@@ -11,14 +11,14 @@ stds=(
 #0.3
 0.4
 #0.6
-ring
-plus
+#ring
+#plus
 #ring0.2
 #ring0.4
 )
 
-resume="no"
-#resume="yes"
+#resume="no"
+resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -106,7 +106,18 @@ function run {
 	    echo "do_resume = 1" >> config/main.conf
 	    echo "resume_ind = $last" >> config/main.conf
 	    echo "wall_resume = 1" >> config/main.conf
+	else
+	    echo "# set a given paticle (index = 0) to movable (it was previously not movable)"
+	    echo "set_movable_index = 0"
+	    echo "set_movable_timestep = 15000"
+	    echo "set_stoppable_index = 0"
+	    echo "set_stoppable_timestep = 15000"
+
+	    echo "# reset particle zero position to bulk height at a given timestep"
+	    echo "reset_partzero_y = 1"
+	    echo "reset_partzero_y_timestep = 15000"
 	fi
+	
 
 	# run code
 	echo 'running'
@@ -176,8 +187,15 @@ function run {
 }
 
 # call function
-#run 'frac'
+run 'frac'
 #run ''
+
+
+stds=(
+0.4
+ring
+plus
+)
 
 function velplot {
     #generate argument list of files with csv filenames

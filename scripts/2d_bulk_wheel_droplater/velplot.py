@@ -54,8 +54,11 @@ for i, shape in enumerate(shapes):
     n = len(t_range)
     out = np.array(a_pool.map(func, t_range, [dirname]*n, [modulo]*n, [dt]*n))
     # print(out)
-    plt.plot(out[:,0], out[:,1])
+    plt.plot(out[:,0], out[:,1], label=shape)
 
+plt.xlabel('time')
+plt.ylabel(r'$v_x$')
+plt.gca().legend()
 png_filename = datadir+'/velplot.png'
 print('Saving plot to', png_filename)
 plt.savefig(png_filename, bbox_inches='tight')
