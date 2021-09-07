@@ -50,6 +50,8 @@ min_particle_spacing = contact_radius*1.001
 L = 20e-3
 hh = 10e-3
 
+wheel_rad = 3e-3
+
 wall_left   = -L
 wall_right  = L
 wall_top    = hh
@@ -88,7 +90,6 @@ msh.info()
 SL = ShapeList()
 
 # add a wheel
-wheel_rad = 3e-3
 SL.append(shape=shape_dict.wheel_annulus(scaling=wheel_rad, inner_circle_ratio=0.7, meshsize=meshsize, filename_suffix='wheel') , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
 
 # append each shape with own scaling
@@ -117,13 +118,13 @@ particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plo
 
 # for the wheel
 particles[0][0].breakable = 0
-particles[0][0].shift([0, bulk_wall_top+wheel_rad+contact_radius/2])
+particles[0][0].shift([-L+wheel_rad+contact_radius, bulk_wall_top+wheel_rad+contact_radius/2])
 particles[0][0].acc += [0, g_val]
 particles[0][0].extforce += [0, g_val * particles[i][0].material.rho]
 
 # torque
 particles[0][0].torque_axis = 2
-particles[0][0].torque_val = 2e7
+particles[0][0].torque_val = -2e7
 
 # keep the wheel fixed in the beginning, mobilize later externally via config file and scripts
 particles[0][0].movable = 0
