@@ -138,14 +138,14 @@ function run {
 	make genvid dev/null 2>&1 #> $logfile
 
 	# generate wall reaction
-	python3 gen_wall_reaction.py
+	#python3 gen_wall_reaction.py
 	# copy npy files
-	cp {output,$dir}/V.npy
+	#cp {output,$dir}/V.npy
 
-	if [ "$1" = "frac" ]
-	then
-	    python3 gen_damage_data.py
-	fi 
+	#if [ "$1" = "frac" ]
+	#then
+	    #python3 gen_damage_data.py
+	#fi 
 	
 
 	## copy latest timestep
