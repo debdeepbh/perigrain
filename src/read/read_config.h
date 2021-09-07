@@ -41,6 +41,11 @@ public:
     // turn on stoppable tag at a given timestep
     int set_stoppable_index = -1;
     int set_stoppable_timestep = -1;
+    // reset wheel center to the top of the bulk
+    bool reset_partzero_y = 0;
+    unsigned reset_partzero_y_timestep = 0;
+    double wheel_rad = 0;
+
 
     // messing with the wall
     double wall_left, wall_right, wall_top, wall_bottom;
@@ -84,9 +89,6 @@ public:
 	damping_ratio = -1; 
 	friction_coefficient = -1;
 
-	// turn off movable tag
-	set_movable_index = -1;
-	set_movable_timestep = -1;
 	
 	// default value implies not loaded from the file
        wall_left   = -999;
@@ -201,6 +203,16 @@ public:
 		}
 		else if (name == "set_stoppable_timestep") {
 		    set_stoppable_timestep = std::stoi(value);
+		}
+
+		else if (name == "reset_partzero_y") {
+		     reset_partzero_y = std::stoi(value);
+		}
+		else if (name == "reset_partzero_y_timestep") {
+		     reset_partzero_y_timestep = std::stoi(value);
+		}
+		else if (name == "wheel_rad") {
+		     wheel_rad = std::stod(value);
 		}
 
 		else if (name == "wall_left") {

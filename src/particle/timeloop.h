@@ -86,6 +86,10 @@ public:
   int set_stoppable_timestep = -1;
 
 
+  bool reset_partzero_y = 0;
+  unsigned reset_partzero_y_timestep;
+  double wheel_rad;
+
   // saving the runtime
   // double start_time;
   std::chrono::_V2::system_clock::time_point start_time;
@@ -189,6 +193,11 @@ public:
     // turn on stoppable
     set_stoppable_index = CFGV.set_stoppable_index;
     set_stoppable_timestep = CFGV.set_stoppable_timestep;
+
+    // move wheel to top of bulk
+    reset_partzero_y = CFGV.reset_partzero_y;
+    reset_partzero_y_timestep = CFGV.reset_partzero_y_timestep;
+    wheel_rad = CFGV.wheel_rad;
 
   };
 
@@ -616,6 +625,32 @@ void run_timeloop(vector<ParticleN<dim>> &PArr, Timeloop TL, Contact CN,
 	    PArr[part_ind].stoppable = 1;
 	}
     }
+
+    if (TL.reset_partzero_y) {
+	auto part_ts = (unsigned) TL.reset_partzero_y_timestep;
+	if (part_ts == t) {
+	    // find max_y of the bulk: i=1,...
+	    double max_bulk_y = PArr[1].pos[0](1) + PArr[1].disp[1](1);
+	    for (unsigned i = 1; i < total_particles_univ; ++i) {
+		for (unsigned j = 0; j < PArr[i].nnodes; j++) {
+		    double now_y = PArr[i].pos[j](1) + PArr[i].disp[j](1); 
+		      if (now_y > max_bulk_y){
+			max_bulk_y = now_y;
+		      }
+		}
+	    }
+	    // move the mean by this amount 
+	    double dest = max_bulk_y + TL.wheel_rad + CN.contact_rad;
+	    double to_move_by = dest - PArr[0].mean_CurrPos()(1);
+	    std::cout << "Setting particle zero mean y val to  " << dest << std::endl;
+	    for (unsigned j = 0; j < PArr[0].nnodes; j++) {
+		PArr[0].pos[j](1) += to_move_by;
+	    }
+	}
+    }
+
+
+
 
 
     // std::cout << "t = " << t << std::endl;

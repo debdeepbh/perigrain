@@ -71,6 +71,9 @@ function run {
 	#cp $path/base$1.conf config/main.conf
 	cp $path/base.conf config/main.conf
 
+	# read wheel rad
+	echo "wheel_rad = $(cat output/wheel_rad)" >> config/main.conf
+
 	# edit timesteps
 	#echo "timesteps = ${timesteps[i]}" >> config/main.conf
 
@@ -111,6 +114,7 @@ function run {
 	make genplot >> $logfile
 
 	## resume
+	
 	#echo 'Resuming'
 
 	##get y_max
@@ -139,7 +143,7 @@ function run {
 
 	# generate wall reaction
 	#python3 gen_wall_reaction.py
-	# copy npy files
+	## copy npy files
 	#cp {output,$dir}/V.npy
 
 	#if [ "$1" = "frac" ]
@@ -165,6 +169,8 @@ function run {
 	# copy plots
 	mv output/img/*.png $dir/
 	mv output/vid/*.mp4 $dir/
+
+	sxiv $dir/*.png
     done
 }
 
