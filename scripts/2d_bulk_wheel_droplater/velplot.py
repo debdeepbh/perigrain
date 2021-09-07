@@ -49,6 +49,9 @@ for i, shape in enumerate(shapes):
     dt = float(p['dt'][0])
     modulo = int(p['modulo'][0])
 
+    # modify
+    fc = 1
+
     ## parallel
     t_range = range(fc, lc+1)
     n = len(t_range)

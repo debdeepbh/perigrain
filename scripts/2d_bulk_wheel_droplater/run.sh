@@ -106,6 +106,12 @@ function run {
 	    echo "do_resume = 1" >> config/main.conf
 	    echo "resume_ind = $last" >> config/main.conf
 	    echo "wall_resume = 1" >> config/main.conf
+
+	    echo "# set a given paticle (index = 0) to movable (it was previously not movable)"
+	    echo "set_movable_index = 0"
+	    echo "set_movable_timestep = $last"
+	    echo "set_stoppable_index = 0"
+	    echo "set_stoppable_timestep = $last"
 	else
 	    echo "# set a given paticle (index = 0) to movable (it was previously not movable)"
 	    echo "set_movable_index = 0"
