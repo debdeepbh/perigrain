@@ -51,6 +51,9 @@ L = 20e-3
 hh = 10e-3
 
 wheel_rad = 3e-3
+# save to load into the config file via script
+with open('output/wheel_rad', 'w') as f:
+    f.write(str(wheel_rad))
 
 wall_left   = -L
 wall_right  = L
@@ -157,13 +160,16 @@ exp =  Experiment(particles, wall, contact)
 # save the data
 exp.save('meshdata/all.h5')
 
-## # plot the setup data
-import load_setup
-## # load the setup data
-exp_b = load_setup.read_setup('meshdata/all.h5')
+plot_setup = 0
 
-wall_color = ['cyan', 'red', 'yellow', 'blue', 'green', 'black']
-# wall_color = ['none', 'none', 'none', 'none', 'none', 'none']
-wall_alpha = 0.1
+if plot_setup:
+    ## # plot the setup data
+    import load_setup
+    ## # load the setup data
+    exp_b = load_setup.read_setup('meshdata/all.h5')
 
-exp_b.plot(by_CurrPos=False, plot_scatter = True, plot_delta = 1, plot_contact_rad = 1, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 1, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_linewidth = 1, wall_alpha=wall_alpha, do_plot = True, do_save = 1, save_filename = 'setup.png', dotsize = 10, linewidth = 0.3, remove_axes = True, grid = False)
+    wall_color = ['cyan', 'red', 'yellow', 'blue', 'green', 'black']
+    # wall_color = ['none', 'none', 'none', 'none', 'none', 'none']
+    wall_alpha = 0.1
+
+    exp_b.plot(by_CurrPos=False, plot_scatter = True, plot_delta = 1, plot_contact_rad = 1, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 1, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_linewidth = 1, wall_alpha=wall_alpha, do_plot = True, do_save = 1, save_filename = 'setup.png', dotsize = 10, linewidth = 0.3, remove_axes = True, grid = False)

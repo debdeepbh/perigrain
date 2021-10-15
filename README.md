@@ -140,11 +140,9 @@ for 2D.
 
 # Todo
 
-* [ ] [Better to edit (a copy of) timeloop.cpp] How to simulate: particle first settles, then things are dropped on them
-	- [ ] config file: 
+- [ ] Reset position of the wheel over the top of the bulk
 - [ ] In addition to `particle.torque` we need initial angular acceleration data, otherwise, initial angular acceleration is taken to be zero.
 - [ ] parameter reading from config file to change the torque
-- [ ] Initial position of the wheel toward the side, not center
 
 
 	
