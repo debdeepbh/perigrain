@@ -9,13 +9,13 @@ stds=(
 #0.1
 #0.2
 #0.3
-#0.4
+0.4
 #0.6
-#ring
+ring
 #ring0.2
 #ring0.4
 plus
-#n4
+n4
 )
 
 resume="no"
@@ -47,7 +47,6 @@ function run {
 
 	# clean
 	make clout
-
 
 	std=${stds[i]}
 	echo "#####################################################"
@@ -146,7 +145,8 @@ function run {
 
 	if [ "$1" = "frac" ]
 	then
-	    python3 gen_damage_data.py
+	    #python3 gen_damage_data.py
+	    echo ''
 	fi 
 	
 
@@ -229,7 +229,7 @@ ringfrac
 #ring0.4frac
 )
 
-#walldata ''
+walldata ''
 
 
 # identifying filename prefix for h5 and png file generated
@@ -252,6 +252,6 @@ function wallplot {
 }
 
 
-#wallplot ''
+wallplot ''
 
 
