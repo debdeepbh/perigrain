@@ -85,3 +85,5 @@ scripts/2d_bulk_diffmesh_large/data/*
 # random files
 y_max
 .vim/*
+
+/tags
