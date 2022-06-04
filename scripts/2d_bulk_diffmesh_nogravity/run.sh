@@ -11,9 +11,11 @@ stds=(
 #0.3
 #0.4
 #0.6
-ring
+#ring
 #ring0.2
 #ring0.4
+plus
+#n4
 )
 
 resume="no"
@@ -219,15 +221,15 @@ stds=(
 #0.1frac
 #0.2frac
 #0.3frac
-#0.4frac
-#plusfrac
-#n4frac
+0.4frac
+plusfrac
+n4frac
 ringfrac
 #ring0.2frac
 #ring0.4frac
 )
 
-walldata ''
+#walldata ''
 
 
 # identifying filename prefix for h5 and png file generated

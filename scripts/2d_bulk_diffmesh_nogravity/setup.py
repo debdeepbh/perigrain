@@ -99,7 +99,8 @@ for i in range(msh.count()):
         SL.append(shape=shape_dict.perturbed_disk(seed=i, steps=16, scaling=msh.incircle_rad[i], std= float(sys.argv[1]) ), count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta, Gnot_scale=0.5, rho_scale=0.8))
 
 # generate the mesh for each shape
-particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=False)
+#particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=False)
+particles = SL.generate_mesh(dimension = 2, contact_radius = contact_radius, plot_mesh=False, plot_shape=False, shapes_in_parallel=True)
 
 ## Apply transformation
 seed(1)

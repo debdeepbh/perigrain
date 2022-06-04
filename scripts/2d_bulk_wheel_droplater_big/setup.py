@@ -51,16 +51,20 @@ L = 20e-3
 hh = 10e-3
 
 wheel_rad = hh/2
-wheel_inner_ratio = 0.9
+wheel_inner_rad = 0.9
+
+# save to load into the config file via script
+with open('output/wheel_rad', 'w') as f:
+    f.write(str(wheel_rad))
 
 wall_left   = -L
 wall_right  = L
-wall_top    = hh * 1.3
+wall_top    = hh * 1.5
 wall_bottom = -hh
 
 bulk_wall_left   = -L
 bulk_wall_right  = L
-bulk_wall_top    = 0
+bulk_wall_top    = hh/3
 bulk_wall_bottom = -hh
 
 # wall_bottom = -5e-3
@@ -91,7 +95,7 @@ msh.info()
 SL = ShapeList()
 
 # add a wheel
-SL.append(shape=shape_dict.wheel_annulus(scaling=wheel_rad, inner_circle_ratio=wheel_inner_ratio, meshsize=meshsize, filename_suffix='wheel') , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
+SL.append(shape=shape_dict.wheel_annulus(scaling=wheel_rad, inner_circle_ratio=wheel_inner_rad, meshsize=meshsize, filename_suffix='wheel') , count=1, meshsize=meshsize, material=material_dict.peridem_deformable(delta))
 
 # append each shape with own scaling
 for i in range(msh.count()):
@@ -158,13 +162,16 @@ exp =  Experiment(particles, wall, contact)
 # save the data
 exp.save('meshdata/all.h5')
 
-## # plot the setup data
-import load_setup
-## # load the setup data
-exp_b = load_setup.read_setup('meshdata/all.h5')
+plot_setup = 0
 
-wall_color = ['cyan', 'red', 'yellow', 'blue', 'green', 'black']
-# wall_color = ['none', 'none', 'none', 'none', 'none', 'none']
-wall_alpha = 0.1
+if plot_setup:
+    ## # plot the setup data
+    import load_setup
+    ## # load the setup data
+    exp_b = load_setup.read_setup('meshdata/all.h5')
 
-exp_b.plot(by_CurrPos=False, plot_scatter = True, plot_delta = 1, plot_contact_rad = 1, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 1, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_linewidth = 1, wall_alpha=wall_alpha, do_plot = True, do_save = 1, save_filename = 'setup.png', dotsize = 10, linewidth = 0.3, remove_axes = True, grid = False)
+    wall_color = ['cyan', 'red', 'yellow', 'blue', 'green', 'black']
+    # wall_color = ['none', 'none', 'none', 'none', 'none', 'none']
+    wall_alpha = 0.1
+
+    exp_b.plot(by_CurrPos=False, plot_scatter = True, plot_delta = 1, plot_contact_rad = 1, plot_bonds = 0, plot_bdry_nodes = 0, plot_bdry_edges= 1, plot_wall = 1, plot_wall_faces = False, wall_color=wall_color, wall_linewidth = 1, wall_alpha=wall_alpha, do_plot = True, do_save = 1, save_filename = 'setup.png', dotsize = 10, linewidth = 0.3, remove_axes = True, grid = False)
