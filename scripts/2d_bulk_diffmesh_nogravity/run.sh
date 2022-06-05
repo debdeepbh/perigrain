@@ -16,11 +16,16 @@ stds=(
 #ring0.4
 #plus
 #n4
-0.4
+#0.4
+ring0.3
+ring0.4
+ring0.5
+ring0.6
+ring0.7
 )
 
-#resume="no"
-resume="yes"
+resume="no"
+#resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
@@ -222,12 +227,15 @@ stds=(
 #0.1frac
 #0.2frac
 #0.3frac
-0.4frac
-plusfrac
-n4frac
-ringfrac
-#ring0.2frac
-#ring0.4frac
+#0.4frac
+#plusfrac
+#n4frac
+#ringfrac
+ring0.3frac
+ring0.4frac
+ring0.5frac
+ring0.6frac
+ring0.7frac
 )
 
 walldata ''

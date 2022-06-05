@@ -4,10 +4,15 @@ logfile=$path/output.log
 
 ## To produce plots with and without fracture, turn of `run` and `run frac`
 stds=(
-0.4frac
-plusfrac
-n4frac
-ringfrac
+#0.4frac
+#plusfrac
+#n4frac
+#ringfrac
+ring0.3frac
+ring0.4frac
+ring0.5frac
+ring0.6frac
+ring0.7frac
 )
 
 
