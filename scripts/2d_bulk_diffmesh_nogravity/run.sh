@@ -9,17 +9,18 @@ stds=(
 #0.1
 #0.2
 #0.3
-0.4
+#0.4
 #0.6
-ring
+#ring
 #ring0.2
 #ring0.4
-plus
-n4
+#plus
+#n4
+0.4
 )
 
-resume="no"
-#resume="yes"
+#resume="no"
+resume="yes"
 
 # while resuming leave this much extra on top of the bulk
 wall_top_extra='0.5e-3'
