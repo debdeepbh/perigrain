@@ -2,8 +2,7 @@
 
 A high-fidelity granular media simulation and analysis platform with grain fracture using peridynamics and discrete element method
 
-![img](demo/3d_hertzian_small.gif)
-![img](demo/settle_combined_small.gif)
+![img](demo/settle_combined_small.gif) ![img](demo/3d_hertzian_small.gif)
 
 # Installation
 
