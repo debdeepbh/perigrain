@@ -2,6 +2,9 @@
 
 A high-fidelity granular media simulation and analysis platform with grain fracture using peridynamics and discrete element method
 
+[!img](demo/3d_hertzian_small.gif)
+[!img](demo/settle_combined_small.gif)
+
 # Installation
 
 ```bash
@@ -23,13 +26,6 @@ pip3 install -r requirements.txt
 make 
 ```
 
-Tested on:
-
-- Ubuntu 18.04
-- Ubuntu 20.04
-- Ubuntu 22.04
-
-
 ## Dependencies
 
 * [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) (Specify the location of the `Eigen` library path in `makefile` if using other versions)
@@ -40,6 +36,13 @@ Tested on:
     * mesh related python dependencies (`pip3 install`): `pygmsh`, `gmsh`, `meshio`
     * optimization using `gekko`
     * parallel processing using `multiprocessing`, `pathos`
+
+Tested on:
+
+- Ubuntu 18.04
+- Ubuntu 20.04
+- Ubuntu 22.04
+
 
 # Experiment setup and running
 

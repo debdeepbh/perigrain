@@ -1,0 +1,89 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# vim
+*.swp
+*.swn
+*.swo
+
+# tags
+tags
+
+# python
+__pycache__
+env/*
+
+
+# Project
+bin/*
+obj/*
+lib/*
+
+data/*
+!data/.gitkeep
+output/csv/*
+!output/csv/.gitkeep
+output/hdf5/*
+!output/hdf5/.gitkeep
+output/img/*
+!output/img/.gitkeep
+output/vid/*
+!output/vid/.gitkeep
+
+
+#scripts
+scripts/2d_pressure/2d_pressure_test/*
+scripts/2d_bulk_diffmesh/data/*
+scripts/2d_bulk_diffmesh_large/data/*
+
+*.log
+
+# mesh stuff
+*.msh
+
+# data
+*.h5
+*.csv
+*.npy
+
+# image
+*.png
+
+#video
+*.mp4
+
+# random files
+y_max
+.vim/*
+
+/tags
