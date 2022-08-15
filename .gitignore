@@ -87,3 +87,4 @@ y_max
 .vim/*
 
 /tags
+*.lock

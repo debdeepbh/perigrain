@@ -1,6 +1,6 @@
 # perigrain
 
-A high-fidelity granular media simulation and analysis platform with grain fracture using peridynamics and discrete element method
+A high-fidelity granular media simulation and analysis platform with grain deformation and fracture using peridynamics and discrete element method
 
 ![img](demo/settle_combined_small.gif) ![img](demo/3d_hertzian_small.gif)
 
@@ -75,4 +75,15 @@ make ex2
 
 # generation simulation plots
 make genplot
+```
+
+# Cite
+
+```bibtex
+@article{bhattacharya2021simulating,
+  title={Simulating grain shape effects and damage in granular media using PeriDEM},
+  author={Bhattacharya, Debdeep and Lipton, Robert P},
+  journal={arXiv preprint arXiv:2108.07212},
+  year={2021}
+}
 ```
