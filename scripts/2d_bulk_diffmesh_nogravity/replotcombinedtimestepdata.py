@@ -13,19 +13,36 @@ fig_size = set_size('amsart')
 
 from sys import argv
 
+avgwindow = 2
+thr = 0.99
+
+#thr = 2
+
+#tag = 'new_shapes_ringfiner2'
 tag = 'new_shapes'
 
-datadir = '/home/debdeep/from_lockett145/perigrain-data'
+#datadir = '/home/debdeep/from_lockett145/perigrain-data'
+# datadir = '/home/debdeep/from_lockett145'
+datadir = '/home/debdeep/Downloads/data_granular_rev2/img_paper_rev2'
+
 
 f = []
 dirs = [  'plusfrac', '0.4frac',        'n4frac', 'ringfrac' ]
+## with oldercommit
+# dirs = [  'plusfrac', '0.4frac',        'n4frac', 'ringfrac_oldercommit' ]
+# dirs = [  'plusfrac', '0.4frac',        'n4frac', 'ringriner1.5frac' ]
 shape = ['Plus',     'Perturbed disk', 'Square', 'Ring']
 
 ## load all the files
 for i,thisdir in enumerate(dirs):
-    input_file = datadir+'/timestep_'+thisdir+'.h5'
+    # input_file = datadir+'/timestep_'+thisdir+'.h5'
+    input_file = datadir+'/'+thisdir+'/h5/timestep_data.h5'
     print('input file:', input_file)
     f.append(h5py.File(input_file, 'r'))
+
+def movingaverage(array, window_size):
+    window = np.ones(int(window_size))/float(window_size)
+    return np.convolve(array, window, 'same')
 
 #######################################################################
 lpair = [r'Volume fraction ($\phi$)', 'Bulk damage']
@@ -36,8 +53,9 @@ for i in range(len(f)):
     ff = f[i]
     vf = np.array(ff['volume_fraction'])
     bd = np.array(ff['bulk_damage'])
+
+    bd = movingaverage(bd, avgwindow)
     # threshold for bulk damage to cut off plots
-    thr = 0.99
     plt.plot(vf[bd < thr], bd[bd < thr], label=shape[i])
 
 plt.xlim(0,1)
@@ -61,15 +79,17 @@ for i in range(len(f)):
     bd = np.array(ff['bulk_damage'])
     wall_reaction = np.array(ff['wall_force'])
     wf = wall_reaction[:,2,1]
+
+    wf = movingaverage(wf, avgwindow)
     # threshold for bulk damage to cut off plots
-    thr = 0.99
-    # thr = 1.99
 
     # plt.plot( vf[vf < thr], wf[vf < thr], label=shape[i])
     plt.plot( vf[bd < thr], wf[bd < thr], label=shape[i])
 
 plt.xlim(0.2,0.9)
 plt.ylim(-0.02e6,0.2e6)
+# plt.xlim(0.2,1)
+# plt.ylim(-0.02e6,0.5e6)
 plt.xlabel(lpair[0])
 plt.ylabel(lpair[1])
 plt.gca().legend()
