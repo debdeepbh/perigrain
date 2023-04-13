@@ -80,10 +80,24 @@ make genplot
 # Cite
 
 ```bibtex
-@article{bhattacharya2021simulating,
-  title={Simulating grain shape effects and damage in granular media using PeriDEM},
-  author={Bhattacharya, Debdeep and Lipton, Robert P},
-  journal={arXiv preprint arXiv:2108.07212},
-  year={2021}
+@article{doi:10.1137/21M1439389,
+author = {Bhattacharya, Debdeep and Lipton, Robert P.},
+title = {Simulating Grain Shape Effects and Damage in Granular Media Using PeriDEM},
+journal = {SIAM Journal on Scientific Computing},
+volume = {45},
+number = {1},
+pages = {B1-B26},
+year = {2023},
+doi = {10.1137/21M1439389},
+
+URL = { 
+        https://doi.org/10.1137/21M1439389
+},
+eprint = { 
+        https://doi.org/10.1137/21M1439389
 }
+,
+    abstract = { Abstract. We provide a numerical platform for the analysis of particle shape and topology effect on the macroscopic behavior of granular media. We work within a discrete element method (DEM) framework and apply a peridynamic model for deformable particles accounting for deformation and damage of individual particles. To accommodate arbitrary particle shapes including nonconvex ones as well as particle topology, an efficient method is developed to keep intraparticle peridynamic interaction within particle boundaries. Particle contact with the rigid boundary wall is computed analytically to improve accuracy. To speed up simulations with particles of different shapes and sizes the initial configuration is chosen using security disks containing different particle shapes that are placed in a jammed state using an optimization-based method. The effect of particle shape and topology on settling and compaction of the aggregate for deformable particles is analyzed. }
+}
+
 ```
